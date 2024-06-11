@@ -1,7 +1,7 @@
 import time
 
 
-class Pid():
+class Pid:
     def __init__(self, kp, ki, kd):
         self.KP = kp
         self.KI = ki
@@ -17,8 +17,9 @@ class Pid():
         self.sum_err += self.now_err
 
         # 使用 PID 控制算法
-        control_output = self.KP * (exp_val - self.now_val) + self.KI * self.sum_err + self.KD * (
-                self.now_err - self.last_err)
+        control_output = (
+            self.KP * (exp_val - self.now_val) + self.KI * self.sum_err + self.KD * (self.now_err - self.last_err)
+        )
 
         # 更新当前值
         self.now_val += control_output
@@ -26,7 +27,7 @@ class Pid():
         return self.now_val
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # 假设你有人物运动轨迹数据
     trajectory_data = [(1, 2), (2, 4), (3, 6), (4, 8), (5, 10)]  # 格式为 (x, y)
 
@@ -40,4 +41,5 @@ if __name__ == '__main__':
         predicted_x = pid_controller_x.cmd_pid(x)
         predicted_y = pid_controller_y.cmd_pid(y)
         print(
-            f"The {i}th prediction, cost {int((time.time() - start) * 1000)} ms,Actual Trajectory: ({x + 1}, {2 * (x + 1)}), Predicted Trajectory: ({predicted_x}, {predicted_y})")
+            f"The {i}th prediction, cost {int((time.time() - start) * 1000)} ms,Actual Trajectory: ({x + 1}, {2 * (x + 1)}), Predicted Trajectory: ({predicted_x}, {predicted_y})"
+        )

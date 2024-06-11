@@ -1,12 +1,11 @@
-from PyQt5.QtCore import Qt, QPoint
-from PyQt5.QtGui import QPixmap, QPainter
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QSlider, QWidget, QCheckBox, QComboBox
+from PyQt5.QtCore import QPoint, Qt
+from PyQt5.QtGui import QPainter, QPixmap
+from PyQt5.QtWidgets import QCheckBox, QComboBox, QHBoxLayout, QLabel, QSlider, QWidget
 
 from apex_yolov5.mouse_mover import MoverFactory
 
 
 class MouseConfigLayout:
-
     def __init__(self, config, main_window, parent_layout):
         self.config = config
         self.main_window = main_window
@@ -226,12 +225,12 @@ class MouseConfigLayout:
         self.human_pixmap = QPixmap("images/human.jpg").scaled(100, 200, Qt.KeepAspectRatio)
         self.crosshair_pixmap = QPixmap("images/crosshair.jpg").scaled(50, 50, Qt.KeepAspectRatio)
         human_pix_map_height = self.human_pixmap.size().height()
-        cross_position_height = int(
-            (human_pix_map_height // 2) * (1 - self.config.cross_hair))
+        cross_position_height = int((human_pix_map_height // 2) * (1 - self.config.cross_hair))
 
         self.crosshair_position = QPoint(
             self.human_pixmap.size().width() // 2 - self.crosshair_pixmap.size().width() // 2,
-            cross_position_height - self.crosshair_pixmap.size().height() // 2)
+            cross_position_height - self.crosshair_pixmap.size().height() // 2,
+        )
         self.image_widget = QWidget(self.main_window)
         self.image_widget.setFixedSize(self.human_pixmap.size())
         self.image_widget.paintEvent = self.paintEvent
@@ -302,14 +301,16 @@ class MouseConfigLayout:
         self.x1_no_x2_aim.setChecked("x1&!x2" in self.config.aim_button)  # 初始化开关的值
 
         self.move_step_label.setText(
-            f"单次水平移动像素:{self.move_step_slider.value()}-{self.move_step_max_slider.value()}")
+            f"单次水平移动像素:{self.move_step_slider.value()}-{self.move_step_max_slider.value()}"
+        )
         self.move_step_slider.setValue(self.config.move_step)  # 初始化值
         self.move_step_max_slider.setValue(self.config.move_step_max)  # 初始化值
         self.move_step_slider.setEnabled(self.config.mouse_smoothing_switch)
         self.move_step_max_slider.setEnabled(self.config.mouse_smoothing_switch)
 
         self.move_step_y_label.setText(
-            f"单次垂直移动像素:{self.move_step_y_slider.value()}-{self.move_step_y_max_slider.value()}")
+            f"单次垂直移动像素:{self.move_step_y_slider.value()}-{self.move_step_y_max_slider.value()}"
+        )
         self.move_step_y_slider.setValue(self.config.move_step_y)  # 初始化值
         self.move_step_y_max_slider.setValue(self.config.move_step_y_max)  # 初始化值
         self.move_step_y_slider.setEnabled(self.config.mouse_smoothing_switch)
@@ -322,14 +323,16 @@ class MouseConfigLayout:
         self.move_path_ny_slider.setValue(int(self.config.move_path_ny * 10))  # 初始化值
 
         self.move_step_label.setText(
-            f"单次水平移动像素:{self.move_step_slider.value()}-{self.move_step_max_slider.value()}")
+            f"单次水平移动像素:{self.move_step_slider.value()}-{self.move_step_max_slider.value()}"
+        )
         self.aim_move_step_slider.setValue(self.config.aim_move_step)  # 初始化值
         self.aim_move_step_max_slider.setValue(self.config.aim_move_step_max)  # 初始化值
         self.aim_move_step_slider.setEnabled(self.config.mouse_smoothing_switch)
         self.aim_move_step_max_slider.setEnabled(self.config.mouse_smoothing_switch)
 
         self.aim_move_step_y_label.setText(
-            f"瞄准时垂直移动像素:{self.aim_move_step_y_slider.value()}-{self.aim_move_step_y_max_slider.value()}")
+            f"瞄准时垂直移动像素:{self.aim_move_step_y_slider.value()}-{self.aim_move_step_y_max_slider.value()}"
+        )
         self.aim_move_step_y_slider.setValue(self.config.aim_move_step_y)  # 初始化值
         self.aim_move_step_y_max_slider.setValue(self.config.aim_move_step_y_max)  # 初始化值
         self.aim_move_step_y_slider.setEnabled(self.config.mouse_smoothing_switch)
@@ -352,18 +355,20 @@ class MouseConfigLayout:
         self.aim_delay_min_slider.setValue(self.config.aiming_delay_min)
         self.aim_delay_max_slider.setValue(self.config.aiming_delay_max)
         self.aim_delay_label.setText(
-            f"瞄准延迟范围: {self.aim_delay_min_slider.value()}-{self.aim_delay_max_slider.value()}")
+            f"瞄准延迟范围: {self.aim_delay_min_slider.value()}-{self.aim_delay_max_slider.value()}"
+        )
 
         self.mouse_move_frequency_slider.setEnabled(
-            self.config.mouse_smoothing_switch and not self.config.mouse_move_frequency_switch)
+            self.config.mouse_smoothing_switch and not self.config.mouse_move_frequency_switch
+        )
 
         human_pix_map_height = self.human_pixmap.size().height()
-        cross_position_height = int(
-            (human_pix_map_height // 2) * (1 - self.config.cross_hair))
+        cross_position_height = int((human_pix_map_height // 2) * (1 - self.config.cross_hair))
 
         self.crosshair_position = QPoint(
             self.human_pixmap.size().width() // 2 - self.crosshair_pixmap.size().width() // 2,
-            cross_position_height - self.crosshair_pixmap.size().height() // 2)
+            cross_position_height - self.crosshair_pixmap.size().height() // 2,
+        )
 
         self.image_widget.update()
 
@@ -371,7 +376,8 @@ class MouseConfigLayout:
         # 如果第一个滑块的值大于等于第二个滑块的值，将第二个滑块的最小值设置为第一个滑块的值加1
         self.aim_delay_max_slider.setMinimum(self.aim_delay_min_slider.value())
         self.aim_delay_label.setText(
-            f"瞄准延迟范围: {self.aim_delay_min_slider.value()}-{self.aim_delay_max_slider.value()}")
+            f"瞄准延迟范围: {self.aim_delay_min_slider.value()}-{self.aim_delay_max_slider.value()}"
+        )
 
     def selection_changed(self, index):
         selected_key = self.mouse_model_combo_box.currentText()
@@ -392,13 +398,13 @@ class MouseConfigLayout:
 
     def disable_silder_toggled(self, checked):
         self.main_window.handle_toggled(checked)
-        if self.main_window.sender().objectName() == 'mouse_smoothing_switch':
+        if self.main_window.sender().objectName() == "mouse_smoothing_switch":
             self.move_step_slider.setEnabled(checked)
             self.move_step_y_slider.setEnabled(checked)
             self.aim_move_step_slider.setEnabled(checked)
             self.aim_move_step_y_slider.setEnabled(checked)
             self.mouse_move_frequency_slider.setEnabled(checked and not self.mouse_move_frequency_switch.isChecked())
-        elif self.main_window.sender().objectName() == 'mouse_move_frequency_switch':
+        elif self.main_window.sender().objectName() == "mouse_move_frequency_switch":
             self.mouse_move_frequency_slider.setEnabled(not checked and self.mouse_smoothing_switch.isChecked())
 
     def joy_move_toggled(self, checked):
@@ -406,18 +412,21 @@ class MouseConfigLayout:
         self.config.joy_move = checked
         if checked:
             from apex_yolov5.job_listener.JoyListener import get_joy_listener
+
             get_joy_listener().start(self.main_window)
 
     def update_move_step_label(self, value):
         self.move_step_max_slider.setMinimum(self.move_step_slider.value())
         self.move_step_label.setText(
-            f"单次水平移动像素:{self.move_step_slider.value()}-{self.move_step_max_slider.value()}")
+            f"单次水平移动像素:{self.move_step_slider.value()}-{self.move_step_max_slider.value()}"
+        )
         self.move_step_label.adjustSize()
 
     def update_move_step_y_label(self, value):
         self.move_step_y_max_slider.setMinimum(self.move_step_y_slider.value())
         self.move_step_y_label.setText(
-            f"单次垂直移动像素:{self.move_step_y_slider.value()}-{self.move_step_y_max_slider.value()}")
+            f"单次垂直移动像素:{self.move_step_y_slider.value()}-{self.move_step_y_max_slider.value()}"
+        )
         self.move_step_y_label.adjustSize()
 
     def update_move_path_nx_label(self, value):
@@ -431,13 +440,15 @@ class MouseConfigLayout:
     def update_aim_move_step_label(self, value):
         self.aim_move_step_max_slider.setMinimum(self.aim_move_step_slider.value())
         self.aim_move_step_label.setText(
-            f"瞄准时水平移动像素:{self.aim_move_step_slider.value()}-{self.aim_move_step_max_slider.value()}")
+            f"瞄准时水平移动像素:{self.aim_move_step_slider.value()}-{self.aim_move_step_max_slider.value()}"
+        )
         self.aim_move_step_label.adjustSize()
 
     def update_aim_move_step_y_label(self, value):
         self.aim_move_step_y_max_slider.setMinimum(self.aim_move_step_y_slider.value())
         self.aim_move_step_y_label.setText(
-            f"瞄准时垂直移动像素:{self.aim_move_step_y_slider.value()}-{self.aim_move_step_y_max_slider.value()}")
+            f"瞄准时垂直移动像素:{self.aim_move_step_y_slider.value()}-{self.aim_move_step_y_max_slider.value()}"
+        )
         self.aim_move_step_y_label.adjustSize()
 
     def update_aim_move_path_nx_label(self, value):
@@ -459,7 +470,8 @@ class MouseConfigLayout:
     def move_crosshair(self, value):
         self.crosshair_position = QPoint(
             self.human_pixmap.size().width() // 2 - self.crosshair_pixmap.size().width() // 2,
-            self.slider.maximum() - value - self.crosshair_pixmap.size().height() // 2)  # 反转滑动条的值
+            self.slider.maximum() - value - self.crosshair_pixmap.size().height() // 2,
+        )  # 反转滑动条的值
         self.image_widget.update()  # 触发重绘
 
     def paintEvent(self, event):
@@ -483,8 +495,7 @@ class MouseConfigLayout:
         self.config.set_config("mouse_move_frequency", 1.0 / self.mouse_move_frequency_slider.value())
         self.config.set_config("re_cut_size", int(self.re_cut_size_slider.value()))
 
-        self.config.set_config("cross_hair", (self.slider.value() / (
-                self.slider.maximum() // 2)) - 1)
+        self.config.set_config("cross_hair", (self.slider.value() / (self.slider.maximum() // 2)) - 1)
 
         self.config.set_config("dynamic_mouse_move", self.dynamic_mouse_move.isChecked())
         self.config.set_config("aiming_delay_min", self.aim_delay_min_slider.value())

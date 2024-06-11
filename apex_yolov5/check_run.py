@@ -21,13 +21,7 @@ def get_CPU_info():
     cpu = []
     cp = s.Win32_Processor()
     for u in cp:
-        cpu.append(
-            {
-                "Name": u.Name,
-                "Serial Number": u.ProcessorId,
-                "CoreNum": u.NumberOfCores
-            }
-        )
+        cpu.append({"Name": u.Name, "Serial Number": u.ProcessorId, "CoreNum": u.NumberOfCores})
     print("cpu info", cpu)
     return cpu
 
@@ -44,10 +38,10 @@ def get_disk_info():
                 "Serial": serial,  # 获取硬盘序列号，调用另外一个win32 API
                 "ID": pd.deviceid,
                 "Caption": pd.Caption,
-                "size": str(int(float(pd.Size) / 1024 / 1024 / 1024)) + "G"
+                "size": str(int(float(pd.Size) / 1024 / 1024 / 1024)) + "G",
             }
         )
-    return sorted(disk, key=lambda x: x['ID'])
+    return sorted(disk, key=lambda x: x["ID"])
 
 
 # mac 地址（包括虚拟机的）
@@ -58,7 +52,7 @@ def get_network_info():
             network.append(
                 {
                     "MAC": nw.MACAddress,  # 无线局域网适配器 WLAN 物理地址
-                    "ip": nw.IPAddress
+                    "ip": nw.IPAddress,
                 }
             )
     return network
@@ -68,7 +62,7 @@ def get_network_info():
 def get_mainboard_info():
     mainboard = []
     for board_id in s.Win32_BaseBoard():
-        mainboard.append(board_id.SerialNumber.strip().strip('.'))
+        mainboard.append(board_id.SerialNumber.strip().strip("."))
     return mainboard
 
     # 获取机器码（这里以MAC地址作为机器码）
@@ -76,24 +70,24 @@ def get_mainboard_info():
 
 def get_machine_code():
     mac = uuid.getnode()
-    return ':'.join(('%012X' % mac)[i:i + 2] for i in range(0, 12, 2))
+    return ":".join(("%012X" % mac)[i : i + 2] for i in range(0, 12, 2))
 
 
 def check_permission(main_windows, machine_code, validate_type):
     # 发送请求到你的验证服务器
     # 你需要替换这个URL为你的服务器地址
     url = "http://1.15.138.227:8123/validate"
-    payload = {"machine_code": machine_code, 'validate_type': validate_type}
+    payload = {"machine_code": machine_code, "validate_type": validate_type}
     response = requests.post(url, data=payload)
-    print(response.content.decode('unicode-escape'))
+    print(response.content.decode("unicode-escape"))
     # 检查服务器的响应
     if response.status_code == 200:
         server_response = response.json()
-        if 'access_granted' in server_response:
+        if "access_granted" in server_response:
             # 检查响应中是否包含日期字段
-            if 'expiration_time' in server_response:
+            if "expiration_time" in server_response:
                 # 解析日期字段为 datetime 对象
-                expiration_time_str = server_response['expiration_time']
+                expiration_time_str = server_response["expiration_time"]
                 if expiration_time_str is None:
                     print("欢迎回来：永久授权用户")
                     if main_windows is not None:
@@ -106,8 +100,9 @@ def check_permission(main_windows, machine_code, validate_type):
                     print("欢迎回来：授权过期时间：" + formatted_expiration_time)
                     if main_windows is not None:
                         main_windows.setWindowTitle(
-                            main_windows.windowTitle() + " 授权过期时间：" + formatted_expiration_time)
-            return server_response['access_granted']
+                            main_windows.windowTitle() + " 授权过期时间：" + formatted_expiration_time
+                        )
+            return server_response["access_granted"]
 
     return None
 

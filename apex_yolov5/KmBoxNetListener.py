@@ -9,6 +9,7 @@ from apex_yolov5.mouse_mover.KmBoxNetMover import KmBoxNetMover
 class KmBoxNetListener:
     def __init__(self, km_box_net_mover: KmBoxNetMover):
         import kmNet
+
         self.kmNet = kmNet
         self.km_box_net_mover = km_box_net_mover
         self.listener_sign = False
@@ -22,6 +23,7 @@ class KmBoxNetListener:
         self.listener_sign = True
         print("km box net 监听启动")
         from apex_yolov5.KeyAndMouseListener import apex_mouse_listener
+
         while self.listener_sign:
             if self.kmNet.isdown_left():
                 if "left" not in self.down_mouse_map:

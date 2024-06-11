@@ -2,16 +2,27 @@ import os
 import threading
 import time
 
-from PyQt5.QtCore import Qt, QEvent
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, QAction, QApplication, QDialog, \
-    QComboBox, QLineEdit, QFileDialog
+from PyQt5.QtCore import QEvent, Qt
+from PyQt5.QtWidgets import (
+    QAction,
+    QApplication,
+    QComboBox,
+    QDialog,
+    QFileDialog,
+    QHBoxLayout,
+    QLineEdit,
+    QMainWindow,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 import detect
 from apex_yolov5.FrameRateMonitor import FrameRateMonitor
-from apex_yolov5.SystemTrayApp import SystemTrayApp
 from apex_yolov5.magnifying_glass import MagnifyingGlassWindows
 from apex_yolov5.mouse_mover import MoverFactory
 from apex_yolov5.socket import config
+from apex_yolov5.SystemTrayApp import SystemTrayApp
 from apex_yolov5.window_layout.ai_toggle_layout import AiToggleLayout
 from apex_yolov5.window_layout.anthropomorphic_config_layout import AnthropomorphicConfigLayout
 from apex_yolov5.window_layout.auto_charged_energy_layout import AutoChargedEnergyLayout
@@ -98,7 +109,7 @@ class ConfigWindow(QMainWindow):
         config_menu.addAction(writer_ref_glass_action)
 
         more_menu = menu_bar.addMenu("更多")
-        disclaimer_action = QAction('免责声明', self)
+        disclaimer_action = QAction("免责声明", self)
         disclaimer_action.triggered.connect(self.open_disclaimer_window)
         more_menu.addAction(disclaimer_action)
 
@@ -121,20 +132,23 @@ class ConfigWindow(QMainWindow):
     def showFileDialog(self):
         options = QFileDialog.Options()
         options |= QFileDialog.ReadOnly
-        file_path, file_type = QFileDialog.getOpenFileName(self, "选取文件", "",
-                                                           "All Files (*);;Python Files (*.py)", options=options)
+        file_path, file_type = QFileDialog.getOpenFileName(
+            self, "选取文件", "", "All Files (*);;Python Files (*.py)", options=options
+        )
 
         current_model_info = self.config.available_models.get(self.config.current_model)
-        print_path = os.path.expanduser('~') + "\\" + "apex_gun\\runs\\detect"
-        detect.run(imgsz=(self.config.imgsz, self.config.imgszy),
-                   conf_thres=self.config.conf_thres,
-                   half=self.config.half,
-                   iou_thres=self.config.iou_thres,
-                   weights=current_model_info["weights"],
-                   data=current_model_info["data"],
-                   source=file_path,
-                   project=print_path,
-                   max_det=10)
+        print_path = os.path.expanduser("~") + "\\" + "apex_gun\\runs\\detect"
+        detect.run(
+            imgsz=(self.config.imgsz, self.config.imgszy),
+            conf_thres=self.config.conf_thres,
+            half=self.config.half,
+            iou_thres=self.config.iou_thres,
+            weights=current_model_info["weights"],
+            data=current_model_info["data"],
+            source=file_path,
+            project=print_path,
+            max_det=10,
+        )
         os.system("explorer.exe %s" % print_path)
 
     def open_read_ref_glass_window(self):

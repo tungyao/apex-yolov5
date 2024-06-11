@@ -1,11 +1,9 @@
-from apex_yolov5.Tools import Tools
 from apex_yolov5.log.Logger import Logger
+from apex_yolov5.Tools import Tools
 
 
 class JoyToKey:
-    """
-        jtk
-    """
+    """jtk."""
 
     def __init__(self, logger: Logger, joy_to_key_map, c1_mouse_mover):
         self.logger = logger
@@ -15,9 +13,7 @@ class JoyToKey:
         self.init_status_map()
 
     def init_status_map(self):
-        """
-            初始化状态
-        """
+        """初始化状态."""
         for joy_to_key in self.joy_to_key_map:
             for joy in self.joy_to_key_map[joy_to_key]:
                 self.joy_to_key_last_status_map[joy_to_key + joy] = False
@@ -46,16 +42,16 @@ class JoyToKey:
 
         if not toggle_key_status and hold_status:
             # self.logger.print_log(f"joy to key [{joy_to_key['key_type']}.{joy_to_key['key']}] down")
-            if self.all_hold(key) and joy_to_key['key_type'] == "mouse":
+            if self.all_hold(key) and joy_to_key["key_type"] == "mouse":
                 self.logger.print_log(f"joy to key all down")
                 for values in axis_joy_to_key_map.values():
-                    self.c1_mouse_mover.mouse_click(values['key'], True)
+                    self.c1_mouse_mover.mouse_click(values["key"], True)
         if toggle_key_status and not hold_status:
             # self.logger.print_log(f"joy to key [{joy_to_key['key_type']}.{joy_to_key['key']}] up")
-            if joy_to_key['key_type'] == "mouse":
+            if joy_to_key["key_type"] == "mouse":
                 self.logger.print_log(f"joy to key all up")
                 for values in axis_joy_to_key_map.values():
-                    self.c1_mouse_mover.mouse_click(values['key'], False)
+                    self.c1_mouse_mover.mouse_click(values["key"], False)
 
         self.joy_to_key_last_status_map[key] = hold_status
 

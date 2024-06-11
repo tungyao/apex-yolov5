@@ -25,7 +25,7 @@ def main(log_window):
                 continue
             start = time.time()
             img_origin = grab_screen_int_array2(sct, monitor=global_config.monitor)
-            img = np.frombuffer(img_origin.rgb, dtype='uint8')
+            img = np.frombuffer(img_origin.rgb, dtype="uint8")
             img = img.reshape((global_config.monitor["height"], global_config.monitor["width"], 3))
             img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
             global_img_info.set_current_img(img_origin, img)
@@ -34,18 +34,25 @@ def main(log_window):
             averager = (0, 0, 0, 0)
             if len(aims):
                 if not global_config.only_save:
-                    averager = lock(aims, global_config.mouse, global_config.desktop_width, global_config.desktop_height,
-                         shot_width=global_img_info.get_current_img().shot_width,
-                         shot_height=global_img_info.get_current_img().shot_height)  # x y 是分辨率
+                    averager = lock(
+                        aims,
+                        global_config.mouse,
+                        global_config.desktop_width,
+                        global_config.desktop_height,
+                        shot_width=global_img_info.get_current_img().shot_width,
+                        shot_height=global_img_info.get_current_img().shot_height,
+                    )  # x y 是分辨率
                 if global_config.is_show_debug_window:
                     for i, det in enumerate(aims):
                         tag, x_center, y_center, width, height = det
-                        x_center, width = global_img_info.get_current_img().shot_width * float(
-                            x_center), global_img_info.get_current_img().shot_width * float(
-                            width)
-                        y_center, height = global_img_info.get_current_img().shot_height * float(
-                            y_center), global_img_info.get_current_img().shot_height * float(
-                            height)
+                        x_center, width = (
+                            global_img_info.get_current_img().shot_width * float(x_center),
+                            global_img_info.get_current_img().shot_width * float(width),
+                        )
+                        y_center, height = (
+                            global_img_info.get_current_img().shot_height * float(y_center),
+                            global_img_info.get_current_img().shot_height * float(height),
+                        )
                         top_left = (int(x_center - width / 2.0), int(y_center - height / 2.0))
                         bottom_right = (int(x_center + width / 2.0), int(y_center + height / 2.0))
                         bboxes.append((tag, top_left, bottom_right))

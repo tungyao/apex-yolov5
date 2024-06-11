@@ -1,29 +1,24 @@
-import serial
 import time
 
+import serial
+
+
 class Esp32Uart:
-    def __init__(self, port='COM1', baudrate=115200):
-        """
-        初始化串口通信
-        :param port: 串口号，默认为'COM3'
-        :param baudrate: 波特率，默认为9600
-        """
+    def __init__(self, port="COM1", baudrate=115200):
+        """初始化串口通信 :param port: 串口号，默认为'COM3' :param baudrate: 波特率，默认为9600."""
         self.port = port
         self.baudrate = baudrate
         try:
-            self.ser = serial.Serial(self.port, self.baudrate)
+            self.set = serial.Serial(self.port, self.baudrate)
             print(f"Serial port {self.port} opened successfully.")
         except serial.SerialException as e:
             print(f"Error opening serial port: {e}")
 
     def send_data(self, data):
-        """
-        向串口发送数据
-        :param data: 要发送的数据，可以是字符串或其他可编码为字节串的对象
-        """
-        if self.ser and self.ser.is_open:
+        """向串口发送数据 :param data: 要发送的数据，可以是字符串或其他可编码为字节串的对象."""
+        if self.set and self.set.is_open:
             try:
-                self.ser.write(data)
+                self.set.write(data)
                 print(f"Sent: {data}")
             except Exception as e:
                 print(f"Error sending data: {e}")
@@ -31,12 +26,13 @@ class Esp32Uart:
             print("Serial port is not open.")
 
     def close(self):
-        """关闭串口"""
-        if self.ser and self.ser.is_open:
-            self.ser.close()
+        """关闭串口."""
+        if self.set and self.set.is_open:
+            self.set.close()
             print(f"Serial port {self.port} closed.")
         else:
             print("Serial port is already closed.")
+
 
 if __name__ == "__main__":
     # 创建一个SerialCommunicator实例
@@ -45,7 +41,7 @@ if __name__ == "__main__":
     try:
         while True:
             user_input = input("Enter message to send (or 'exit' to quit): ")
-            if user_input.lower() == 'exit':
+            if user_input.lower() == "exit":
                 break
             # 调用send_data方法发送数据
             communicator.send_data(user_input)

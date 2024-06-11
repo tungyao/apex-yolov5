@@ -4,9 +4,7 @@ from apex_yolov5.log.Logger import Logger
 
 
 class CapScreenTaker:
-    """
-        本地截图
-    """
+    """本地截图."""
 
     def __init__(self, logger: Logger):
         self.logger = logger
@@ -19,5 +17,5 @@ class CapScreenTaker:
         frames = []
         ret, frame = self.cap.read()
         for monitor in bbox_list:
-            frames.append(frame[monitor[1]: monitor[3], monitor[0]: monitor[2]])
+            frames.append(frame[monitor[1] : monitor[3], monitor[0] : monitor[2]])
         return list(frames)

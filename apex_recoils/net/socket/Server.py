@@ -9,9 +9,7 @@ from apex_yolov5.socket import socket_util
 
 
 class Server:
-    """
-        识别服务端
-    """
+    """识别服务端."""
 
     def __init__(self, logger: Logger, server_address, screen_taker: LocalScreenTaker):
         self.logger = logger
@@ -22,9 +20,7 @@ class Server:
         self.open()
 
     def open(self):
-        """
-            打开服务端
-        """
+        """打开服务端."""
         # 创建一个TCP/IP套接字
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # 绑定服务器地址和端口
@@ -34,13 +30,13 @@ class Server:
 
     def wait_client(self):
         """
-            监听
+        监听
         """
         while True:
-            self.logger.print_log('等待客户端连接...')
+            self.logger.print_log("等待客户端连接...")
             # 等待客户端连接
             client_socket, client_address = self.server_socket.accept()
-            self.logger.print_log('客户端已连接:{}'.format(client_address))
+            self.logger.print_log("客户端已连接:{}".format(client_address))
             data = socket_util.recv(client_socket)
             data = pickle.loads(data)
             self.logger.print_log("客户端类型：{}".format(data))

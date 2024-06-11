@@ -1,6 +1,6 @@
-from PyQt5.QtGui import QPainter, QPen, QColor, QPixmap
+from PyQt5.QtCore import QPoint, QRect, Qt
+from PyQt5.QtGui import QColor, QPainter, QPen, QPixmap
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtCore import Qt, QPoint, QRect
 
 from apex_yolov5 import global_img_info
 from apex_yolov5.socket.config import global_config
@@ -12,7 +12,7 @@ class AimShowWindows(QMainWindow):
         self.config = config
         self.left_top_x, self.left_top_y = self.config.left_top_x, self.config.left_top_y
         self.setGeometry(self.left_top_x, self.left_top_y, self.config.shot_width, self.config.shot_width)
-        self.setWindowTitle('')
+        self.setWindowTitle("")
         self.setWindowFlags(Qt.Tool | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.bbox = None
@@ -36,12 +36,14 @@ class AimShowWindows(QMainWindow):
 
         painter = QPainter(self)
         tag, x_center, y_center, width, height = self.bbox
-        x_center, width = global_img_info.get_current_img().shot_width * float(
-            x_center), global_img_info.get_current_img().shot_width * float(
-            width)
-        y_center, height = global_img_info.get_current_img().shot_height * float(
-            y_center), global_img_info.get_current_img().shot_height * float(
-            height)
+        x_center, width = (
+            global_img_info.get_current_img().shot_width * float(x_center),
+            global_img_info.get_current_img().shot_width * float(width),
+        )
+        y_center, height = (
+            global_img_info.get_current_img().shot_height * float(y_center),
+            global_img_info.get_current_img().shot_height * float(height),
+        )
 
         # 计算图标的位置
         icon_width, icon_height = self.icon.width(), self.icon.height()

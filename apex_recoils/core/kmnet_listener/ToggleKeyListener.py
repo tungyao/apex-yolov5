@@ -2,26 +2,27 @@ import time
 
 from apex_recoils.core import GameWindowsStatus
 from apex_yolov5.KmBoxNetListener import KmBoxNetListener
-from apex_yolov5.Tools import Tools
 from apex_yolov5.log.Logger import Logger
 from apex_yolov5.mouse_mover import MoverFactory
+from apex_yolov5.Tools import Tools
 
 
 class ToggleKeyListener:
-    """
-        监听kmnet 关于辅助开关键的实现
-    """
+    """监听kmnet 关于辅助开关键的实现."""
 
-    def __init__(self, logger: Logger, km_box_net_listener: KmBoxNetListener, delayed_activation_key_list,
-                 toggle_hold_key):
+    def __init__(
+        self, logger: Logger, km_box_net_listener: KmBoxNetListener, delayed_activation_key_list, toggle_hold_key
+    ):
         import kmNet
+
         self.kmNet = kmNet
         self.logger = logger
         self.km_box_net_listener = km_box_net_listener
         # 自定义按住延迟转换
         self.delayed_activation_key_status_map = {}
-        self.delayed_activation_key_list = [(Tools.convert_to_decimal(key), value) for key, value in
-                                            delayed_activation_key_list.items()]
+        self.delayed_activation_key_list = [
+            (Tools.convert_to_decimal(key), value) for key, value in delayed_activation_key_list.items()
+        ]
         km_box_net_listener.connect(self.delayed_activation)
 
         # 自定义切换按住键
@@ -115,8 +116,10 @@ class ToggleKeyListener:
 
                     delayed_activation_key_status = self.delayed_activation_key_status_map[key]
                     if down_deactivation:
-                        if (int((time.time() - delayed_activation_key_status.hold_time) * 1000) >= key_time
-                                and not delayed_activation_key_status.handle):
+                        if (
+                            int((time.time() - delayed_activation_key_status.hold_time) * 1000) >= key_time
+                            and not delayed_activation_key_status.handle
+                        ):
                             delayed_activation_key_status.handle = True
                             self.logger.print_log(f"持续按下{key},{key_time}ms，转换器开关按下：[{click_key}]")
                             # 转换器切换键
@@ -130,8 +133,9 @@ class ToggleKeyListener:
                                 self.delayed_activation_key_status_map[key] = DelayedActivationKey()
 
                             delayed_activation_key_status = self.delayed_activation_key_status_map[key]
-                            if (int((time.time() - delayed_activation_key_status.hold_time) * 1000) >= key_time
-                                    and not delayed_activation_key_status.in_handle_list(key_time)):
+                            if int(
+                                (time.time() - delayed_activation_key_status.hold_time) * 1000
+                            ) >= key_time and not delayed_activation_key_status.in_handle_list(key_time):
                                 delayed_activation_key_status.list_handle(key_time)
                                 self.logger.print_log(f"持续按下{key},{key_time}ms，转换器开关按下：[{click_key}]")
                                 # 转换器切换键
@@ -157,19 +161,18 @@ class ToggleKeyListener:
                                     if int((time.time() - delayed_activation_key_status.hold_time) * 1000) >= key_time:
                                         if click_key is not None:
                                             self.logger.print_log(
-                                                f"符合按键时长{key_time}，按下{key}开关，转换器开关按下：[{click_key}]")
+                                                f"符合按键时长{key_time}，按下{key}开关，转换器开关按下：[{click_key}]"
+                                            )
                                             MoverFactory.mouse_mover().click_key(Tools.convert_to_decimal(click_key))
                                         break
                     self.delayed_activation_key_status_map.pop(key)
 
-    def destory(self):
+    def destroy(self):
         self.kmNet.unmask_all()
 
 
 class DelayedActivationKey:
-    """
-        开关状态
-    """
+    """开关状态."""
 
     def __init__(self):
         self.hold_time = time.time()
@@ -184,9 +187,7 @@ class DelayedActivationKey:
 
 
 class ToggleKey:
-    """
-        开关状态
-    """
+    """开关状态."""
 
     def __init__(self):
         self.last_hold_status = False

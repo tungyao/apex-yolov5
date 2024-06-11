@@ -22,8 +22,8 @@
 - [x] 识别帧数波动变换的可视化折线图
 - [x] 漏枪
 - [x] 适配kmbox A,罗技驱动,无涯键鼠盒子
-- [X] 动态识别区域：解决了固定参数无法贴脸与抽远枪的问题，现支持根据敌人大小动态改变识别范围
-- [X] 锁定敌人标记
+- [x] 动态识别区域：解决了固定参数无法贴脸与抽远枪的问题，现支持根据敌人大小动态改变识别范围
+- [x] 锁定敌人标记
 
 ## 使用说明
 
@@ -34,6 +34,7 @@
 或参考文章[(yolov5从零开始，自动瞄准不再是天方夜谭)](https://www.jianshu.com/p/84ad94250172)
 
 ## 其他项目
+
 [罗技抖枪宏大全](https://github.com/wdragondragon/apex-shake-gun.git)
 
 [基于opencv的apex枪械识别框架（带压枪抖枪，对接硬件转换器自动识别）](https://github.com/wdragondragon/ApexRecoils.git)

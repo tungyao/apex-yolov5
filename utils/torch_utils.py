@@ -140,6 +140,7 @@ def select_device(device="", batch_size=0, newline=True):
         arg = "mps"
     elif dml:
         import torch_directml
+
         if torch_directml.is_available():
             devices = torch_directml.device(0)  # 启用0号dml设备，在这可以更换使用的设备
             n = 0

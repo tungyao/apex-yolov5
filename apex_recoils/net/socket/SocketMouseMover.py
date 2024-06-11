@@ -41,7 +41,7 @@ class SocketMouseMover(MouseMover):
 
     def destroy(self):
         """
-            销毁
+        销毁
         """
         self.listener.stop()
-        self.toggle_key_listener.destory()
+        self.toggle_key_listener.destroy()

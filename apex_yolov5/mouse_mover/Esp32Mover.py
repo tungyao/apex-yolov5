@@ -14,15 +14,15 @@ class Esp32(MouseMover):
         self.esp32u = Esp32Uart()
 
     def move_rp(self, x: int, y: int, re_cut_size=0):
-        c = [x, y, '\n']
+        c = [x, y, "\n"]
         self.esp32u.send_data(c)
 
     # """
     #    传入的应该是相对移动的xy距离
     # """
     def move(self, x: int, y: int):
-        c = [x, y, '\n']
+        c = [x, y, "\n"]
         self.esp32u.send_data(c)
+
     def destroy(self):
         self.esp32u.close()
-

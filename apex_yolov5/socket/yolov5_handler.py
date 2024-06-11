@@ -1,4 +1,5 @@
 import time
+
 import numpy as np
 from torch import from_numpy, tensor
 
@@ -9,13 +10,14 @@ from utils.augmentations import letterbox
 from utils.general import non_max_suppression, scale_boxes, xyxy2xywh
 
 model = load_model()
-names = model.module.names if hasattr(model, 'module') else model.names
+names = model.module.names if hasattr(model, "module") else model.names
+
 
 def reload_model():
     global model, names
     if not apex_model.current_model_name == global_config.current_model:
         model = load_model()
-        names = model.module.names if hasattr(model, 'module') else model.names
+        names = model.module.names if hasattr(model, "module") else model.names
 
 
 def get_aims(img0):
@@ -45,13 +47,11 @@ def get_aims(img0):
 
             for *xyxy, conf, cls in reversed(det):
                 # bbox:(tag, x_center, y_center, x_width, y_width)
-                """
-                0 ct_head  1 ct_body  2 t_head  3 t_body
-                """
+                """0 ct_head  1 ct_body  2 t_head  3 t_body."""
                 xywh = (xyxy2xywh(tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
                 line = (cls, *xywh)  # label format
-                aim = ('%g ' * len(line)).rstrip() % line
-                aim = aim.split(' ')
-                if all(item != 'nan' for item in aim):
+                aim = ("%g " * len(line)).rstrip() % line
+                aim = aim.split(" ")
+                if all(item != "nan" for item in aim):
                     aims.append(aim)
     return aims

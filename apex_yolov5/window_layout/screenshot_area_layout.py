@@ -1,10 +1,18 @@
-from PyQt5.QtCore import Qt, QRectF
-from PyQt5.QtGui import QIntValidator, QColor
-from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QGraphicsView, QGraphicsScene, QCheckBox, \
-    QMessageBox
+from PyQt5.QtCore import QRectF, Qt
+from PyQt5.QtGui import QColor, QIntValidator
+from PyQt5.QtWidgets import (
+    QCheckBox,
+    QGraphicsScene,
+    QGraphicsView,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QMessageBox,
+    QVBoxLayout,
+)
 
-from apex_yolov5.windows.aim_show_window import get_aim_show_window, destory_aim_show_window
-from apex_yolov5.windows.circle_window import get_circle_window, destory_circle_window
+from apex_yolov5.windows.aim_show_window import destory_aim_show_window, get_aim_show_window
+from apex_yolov5.windows.circle_window import destory_circle_window, get_circle_window
 
 
 class ScreenshotAreaLayout:
@@ -158,13 +166,13 @@ class ScreenshotAreaLayout:
         aim_multi_stage_aiming_speed_layout.addWidget(self.aim_multi_stage_aiming_speed_label)
         aim_multi_stage_aiming_speed_layout.addWidget(self.aim_multi_stage_aiming_speed_input)
 
-        self.view = RectView(self.main_window,
-                             outer_rect_size=(
-                                 int(self.config.desktop_width / 10), int(self.config.desktop_height / 10)),
-                             inner_rect_size=(
-                                 int(self.config.shot_width / 10), int(self.config.shot_height / 10)),
-                             radius=int(self.config.mouse_moving_radius / 10),
-                             aim_radius=int(self.config.aim_mouse_moving_radius / 10))
+        self.view = RectView(
+            self.main_window,
+            outer_rect_size=(int(self.config.desktop_width / 10), int(self.config.desktop_height / 10)),
+            inner_rect_size=(int(self.config.shot_width / 10), int(self.config.shot_height / 10)),
+            radius=int(self.config.mouse_moving_radius / 10),
+            aim_radius=int(self.config.aim_mouse_moving_radius / 10),
+        )
         screenshot_area_layout.addWidget(self.screenshot_area_title_label)
         screenshot_area_layout.addLayout(show_circle_layout)
         screenshot_area_layout.addLayout(resolution_layout)
@@ -188,13 +196,21 @@ class ScreenshotAreaLayout:
         self.aim_mouse_moving_radius_input.setText(str(int(self.config.aim_mouse_moving_radius)))
         self.multi_stage_aiming_speed_input.setText(
             " ".join(
-                ["|".join([f"{self.delete_extra_zero(start)}-{self.delete_extra_zero(end)}" for start, end in stage])
-                 for stage in self.config.multi_stage_aiming_speed]))
+                [
+                    "|".join([f"{self.delete_extra_zero(start)}-{self.delete_extra_zero(end)}" for start, end in stage])
+                    for stage in self.config.multi_stage_aiming_speed
+                ]
+            )
+        )
 
         self.aim_multi_stage_aiming_speed_input.setText(
             " ".join(
-                ["|".join([f"{self.delete_extra_zero(start)}-{self.delete_extra_zero(end)}" for start, end in stage])
-                 for stage in self.config.aim_multi_stage_aiming_speed]))
+                [
+                    "|".join([f"{self.delete_extra_zero(start)}-{self.delete_extra_zero(end)}" for start, end in stage])
+                    for stage in self.config.aim_multi_stage_aiming_speed
+                ]
+            )
+        )
 
         self.multi_stage_aiming_speed_toggle.setChecked(self.config.multi_stage_aiming_speed_toggle)
         self.based_on_character_box.setChecked(self.config.based_on_character_box)
@@ -212,13 +228,14 @@ class ScreenshotAreaLayout:
         self.dynamic_screenshot_increase_threshold_input.setText(str(self.config.dynamic_screenshot_increase_threshold))
         self.dynamic_screenshot_reduce_threshold_y_input.setText(str(self.config.dynamic_screenshot_reduce_threshold_y))
         self.dynamic_screenshot_increase_threshold_y_input.setText(
-            str(self.config.dynamic_screenshot_increase_threshold_y))
+            str(self.config.dynamic_screenshot_increase_threshold_y)
+        )
         self.dynamic_screenshot_toggle(self.config.dynamic_screenshot)
 
     def delete_extra_zero(self, n):
-        """删除小数点后多余的0"""
-        n = '{:g}'.format(n)
-        n = float(n) if '.' in n else int(n)  # 含小数点转float否则int
+        """删除小数点后多余的0."""
+        n = "{:g}".format(n)
+        n = float(n) if "." in n else int(n)  # 含小数点转float否则int
         return n
 
     def dynamic_screenshot_toggle(self, checked):
@@ -288,8 +305,11 @@ class ScreenshotAreaLayout:
                     num_one = float(num_str_arr[0])
                     num_two = float(num_str_arr[1])
                     if not (len(num_str_arr) == 2 and num_two >= num_one):
-                        QMessageBox.warning(self.main_window, "不符合条件",
-                                            f"{num_str_arr} 格式错误，格式为 数字-数字，且前一位大于后一位")
+                        QMessageBox.warning(
+                            self.main_window,
+                            "不符合条件",
+                            f"{num_str_arr} 格式错误，格式为 数字-数字，且前一位大于后一位",
+                        )
 
                     if not 0 <= num_two <= speed_up:
                         QMessageBox.warning(self.main_window, "不符合条件", f"{num_two} 数字不允许比瞄准范围大")
@@ -306,13 +326,14 @@ class ScreenshotAreaLayout:
         self.config.set_config("mouse_moving_radius", int(self.mouse_moving_radius_input.text()))
         self.config.set_config("aim_mouse_moving_radius", int(self.aim_mouse_moving_radius_input.text()))
 
-        multi_stage_aiming_speed_arr = self.check_multi_stage_aiming_speed(self.config.mouse_moving_radius,
-                                                                           self.multi_stage_aiming_speed_input.text())
+        multi_stage_aiming_speed_arr = self.check_multi_stage_aiming_speed(
+            self.config.mouse_moving_radius, self.multi_stage_aiming_speed_input.text()
+        )
         self.config.set_config("multi_stage_aiming_speed", multi_stage_aiming_speed_arr)
 
-        aim_multi_stage_aiming_speed_arr = self.check_multi_stage_aiming_speed(self.config.aim_mouse_moving_radius,
-                                                                               self.aim_multi_stage_aiming_speed_input
-                                                                               .text())
+        aim_multi_stage_aiming_speed_arr = self.check_multi_stage_aiming_speed(
+            self.config.aim_mouse_moving_radius, self.aim_multi_stage_aiming_speed_input.text()
+        )
         self.config.set_config("aim_multi_stage_aiming_speed", aim_multi_stage_aiming_speed_arr)
 
         self.config.set_config("multi_stage_aiming_speed_toggle", self.multi_stage_aiming_speed_toggle.isChecked())
@@ -324,16 +345,21 @@ class ScreenshotAreaLayout:
         self.config.set_config("dynamic_lower_width", int(self.dynamic_lower_width_input.text()))
         self.config.set_config("dynamic_lower_height", int(self.dynamic_lower_height_input.text()))
         self.config.set_config("dynamic_screenshot_step", int(self.dynamic_screenshot_step_input.text()))
-        self.config.set_config("dynamic_screenshot_collection_window",
-                               int(self.dynamic_screenshot_collection_window_input.text()))
-        self.config.set_config("dynamic_screenshot_reduce_threshold",
-                               float(self.dynamic_screenshot_reduce_threshold_input.text()))
-        self.config.set_config("dynamic_screenshot_increase_threshold",
-                               float(self.dynamic_screenshot_increase_threshold_input.text()))
-        self.config.set_config("dynamic_screenshot_reduce_threshold_y",
-                               float(self.dynamic_screenshot_reduce_threshold_y_input.text()))
-        self.config.set_config("dynamic_screenshot_increase_threshold_y",
-                               float(self.dynamic_screenshot_increase_threshold_y_input.text()))
+        self.config.set_config(
+            "dynamic_screenshot_collection_window", int(self.dynamic_screenshot_collection_window_input.text())
+        )
+        self.config.set_config(
+            "dynamic_screenshot_reduce_threshold", float(self.dynamic_screenshot_reduce_threshold_input.text())
+        )
+        self.config.set_config(
+            "dynamic_screenshot_increase_threshold", float(self.dynamic_screenshot_increase_threshold_input.text())
+        )
+        self.config.set_config(
+            "dynamic_screenshot_reduce_threshold_y", float(self.dynamic_screenshot_reduce_threshold_y_input.text())
+        )
+        self.config.set_config(
+            "dynamic_screenshot_increase_threshold_y", float(self.dynamic_screenshot_increase_threshold_y_input.text())
+        )
 
 
 class RectView(QGraphicsView):
@@ -359,16 +385,22 @@ class RectView(QGraphicsView):
 
     def center_inner_rect(self):
         # 将内部框居中
-        self.inner_rect.setPos((self.outer_rect.rect().width() - self.inner_rect.rect().width()) / 2,
-                               (self.outer_rect.rect().height() - self.inner_rect.rect().height()) / 2)
+        self.inner_rect.setPos(
+            (self.outer_rect.rect().width() - self.inner_rect.rect().width()) / 2,
+            (self.outer_rect.rect().height() - self.inner_rect.rect().height()) / 2,
+        )
 
     def center_inner_circle(self):
-        self.inner_circle.setPos((self.outer_rect.rect().width() - self.inner_circle.rect().width()) / 2,
-                                 (self.outer_rect.rect().height() - self.inner_circle.rect().height()) / 2)
+        self.inner_circle.setPos(
+            (self.outer_rect.rect().width() - self.inner_circle.rect().width()) / 2,
+            (self.outer_rect.rect().height() - self.inner_circle.rect().height()) / 2,
+        )
 
     def center_inner_circle_aim(self):
-        self.inner_circle_aim.setPos((self.outer_rect.rect().width() - self.inner_circle_aim.rect().width()) / 2,
-                                     (self.outer_rect.rect().height() - self.inner_circle_aim.rect().height()) / 2)
+        self.inner_circle_aim.setPos(
+            (self.outer_rect.rect().width() - self.inner_circle_aim.rect().width()) / 2,
+            (self.outer_rect.rect().height() - self.inner_circle_aim.rect().height()) / 2,
+        )
 
     def resize_inner_rect(self, width, height):
         # 改变内部框的大小

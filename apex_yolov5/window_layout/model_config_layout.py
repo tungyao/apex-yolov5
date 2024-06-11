@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QVBoxLayout, QComboBox, QLabel, QHBoxLayout, QSlider
+from PyQt5.QtWidgets import QComboBox, QHBoxLayout, QLabel, QSlider, QVBoxLayout
 
 from apex_yolov5.socket import yolov5_handler
 
@@ -70,7 +70,7 @@ class ModelConfigLayout:
 
     def selection_changed(self, index):
         selected_key = self.model_combo_box.currentText()
-        if selected_key == '':
+        if selected_key == "":
             return
         self.model_combo_box.setEnabled(False)
         self.config.set_config("current_model", selected_key)

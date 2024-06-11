@@ -5,7 +5,6 @@ from apex_yolov5.mouse_mover.MouseMover import MouseMover
 
 
 class KmBoxMover(MouseMover):
-
     def __init__(self, logger: Logger, mouse_mover_param):
         # 初始化
         # dll地址
@@ -29,9 +28,7 @@ class KmBoxMover(MouseMover):
         self.left(0)
 
     def left(self, vk_key: int):
-        """
-            鼠标左键控制 0松开 1按下
-        """
+        """鼠标左键控制 0松开 1按下."""
         # 左键
         self.km_box_A.KM_left(ctypes.c_char(vk_key))
 
@@ -40,9 +37,8 @@ class KmBoxMover(MouseMover):
 
     def move(self, short_x: int, short_y: int):
         """
-        鼠标相对移动
-        x		:鼠标X轴方向移动距离
-        y		:鼠标Y轴方向移动距离
+        鼠标相对移动 x                :鼠标X轴方向移动距离 y           :鼠标Y轴方向移动距离.
+
         返回值：
                 -1：发送失败\n
                 0：发送成功\n

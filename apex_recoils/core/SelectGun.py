@@ -2,8 +2,8 @@ import threading
 import time
 import traceback
 
-from apex_recoils.core.ReaSnowSelectGun import ReaSnowSelectGun
 from apex_recoils.core.image_comparator.LocalImageComparator import LocalImageComparator
+from apex_recoils.core.ReaSnowSelectGun import ReaSnowSelectGun
 from apex_recoils.core.screentaker.LocalScreenTaker import LocalScreenTaker
 from apex_yolov5.KeyAndMouseListener import KMCallBack
 from apex_yolov5.log import LogFactory
@@ -12,13 +12,23 @@ from apex_yolov5.socket.config import global_config
 
 
 class SelectGun:
-    """
-        枪械识别
-    """
+    """枪械识别."""
 
-    def __init__(self, logger: Logger, bbox, image_path, scope_bbox, scope_path, hop_up_bbox, hop_up_path,
-                 refresh_buttons, has_turbocharger, image_comparator, screen_taker: LocalScreenTaker,
-                 game_windows_status):
+    def __init__(
+        self,
+        logger: Logger,
+        bbox,
+        image_path,
+        scope_bbox,
+        scope_path,
+        hop_up_bbox,
+        hop_up_path,
+        refresh_buttons,
+        has_turbocharger,
+        image_comparator,
+        screen_taker: LocalScreenTaker,
+        game_windows_status,
+    ):
         super().__init__()
         self.logger = logger
         self.on_key_map = dict()
@@ -45,9 +55,7 @@ class SelectGun:
         threading.Thread(target=self.timing_execution).start()
 
     def timing_execution(self):
-        """
-            定时识别
-        """
+        """定时识别."""
         while True:
             try:
                 if self.game_windows_status.get_game_windows_status():
@@ -104,14 +112,12 @@ class SelectGun:
         return self.screen_taker.get_images_from_bbox(bbox_list)
 
     def select_gun(self, pressed=False, toggle=False, auto=False):
-        """
-            使用图片对比，逐一识别枪械，相似度最高设置为current_gun
-        :return:
-        """
+        """使用图片对比，逐一识别枪械，相似度最高设置为current_gun :return:"""
         if not self.game_windows_status.get_game_windows_status():
             return False
-        gun_temp, score_temp = self.image_comparator.compare_with_path(self.image_path,
-                                                                       self.get_images_from_bbox([self.bbox]), 0.9, 0.7)
+        gun_temp, score_temp = self.image_comparator.compare_with_path(
+            self.image_path, self.get_images_from_bbox([self.bbox]), 0.9, 0.7
+        )
         if gun_temp is None:
             self.logger.print_log("未找到枪械")
             self.current_gun = None
@@ -119,26 +125,25 @@ class SelectGun:
             self.current_hot_pop = None
             return False
 
-        scope_temp, score_scope_temp = self.image_comparator.compare_with_path(self.scope_path,
-                                                                               self.get_images_from_bbox(
-                                                                                   self.scope_bbox), 0.9,
-                                                                               0.4)
+        scope_temp, score_scope_temp = self.image_comparator.compare_with_path(
+            self.scope_path, self.get_images_from_bbox(self.scope_bbox), 0.9, 0.4
+        )
         if scope_temp is None:
             self.logger.print_log("未找到配件，默认为1倍")
-            scope_temp = '1x'
+            scope_temp = "1x"
 
         if gun_temp in self.has_turbocharger:
-            hop_up_temp, score_hop_up_temp = self.image_comparator.compare_with_path(self.hop_up_path,
-                                                                                     self.get_images_from_bbox(
-                                                                                         self.hop_up_bbox),
-                                                                                     0.9, 0.6)
+            hop_up_temp, score_hop_up_temp = self.image_comparator.compare_with_path(
+                self.hop_up_path, self.get_images_from_bbox(self.hop_up_bbox), 0.9, 0.6
+            )
         else:
             hop_up_temp = None
             score_hop_up_temp = 0
 
         if gun_temp == self.current_gun and scope_temp == self.current_scope and hop_up_temp == self.current_hot_pop:
             self.logger.print_log(
-                "当前枪械搭配已经是: {}-{}-{}".format(self.current_gun, self.current_scope, self.current_hot_pop))
+                "当前枪械搭配已经是: {}-{}-{}".format(self.current_gun, self.current_scope, self.current_hot_pop)
+            )
             if auto:
                 return False
         else:
@@ -146,10 +151,15 @@ class SelectGun:
             self.current_gun = gun_temp
             self.current_hot_pop = hop_up_temp
             self.logger.print_log(
-                "枪械: {},相似: {}-配件: {},相似: {}-hop_up: {},相似: {}".format(self.current_gun, score_temp,
-                                                                                 self.current_scope, score_scope_temp,
-                                                                                 self.current_hot_pop,
-                                                                                 score_hop_up_temp))
+                "枪械: {},相似: {}-配件: {},相似: {}-hop_up: {},相似: {}".format(
+                    self.current_gun,
+                    score_temp,
+                    self.current_scope,
+                    score_scope_temp,
+                    self.current_hot_pop,
+                    score_hop_up_temp,
+                )
+            )
 
         for func in self.call_back:
             func(self.current_gun, self.current_scope, self.current_hot_pop)
@@ -161,16 +171,9 @@ class SelectGun:
     def test(self):
         self.logger.print_log("自动识别初始化中，请稍后……")
         start = time.time()
-        self.image_comparator.compare_with_path(self.image_path,
-                                                self.get_images_from_bbox([self.bbox]), 0.9, 0.7)
-        self.image_comparator.compare_with_path(self.scope_path,
-                                                self.get_images_from_bbox(
-                                                    self.scope_bbox), 0.9,
-                                                0.4)
-        self.image_comparator.compare_with_path(self.hop_up_path,
-                                                self.get_images_from_bbox(
-                                                    self.hop_up_bbox),
-                                                0.9, 0.6)
+        self.image_comparator.compare_with_path(self.image_path, self.get_images_from_bbox([self.bbox]), 0.9, 0.7)
+        self.image_comparator.compare_with_path(self.scope_path, self.get_images_from_bbox(self.scope_bbox), 0.9, 0.4)
+        self.image_comparator.compare_with_path(self.hop_up_path, self.get_images_from_bbox(self.hop_up_bbox), 0.9, 0.6)
         self.logger.print_log(f"自动识别初始化完毕，耗时[{int((time.time() - start) * 1000)}]")
         self.select_gun_sign = False
 

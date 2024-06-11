@@ -1,6 +1,6 @@
 import cv2
-from PyQt5.QtGui import QImage, QPixmap, QPainter
-from PyQt5.QtWidgets import QMainWindow, QWidget, QLabel, QVBoxLayout
+from PyQt5.QtGui import QImage, QPainter, QPixmap
+from PyQt5.QtWidgets import QLabel, QMainWindow, QVBoxLayout, QWidget
 
 from apex_yolov5.Tools import Tools
 

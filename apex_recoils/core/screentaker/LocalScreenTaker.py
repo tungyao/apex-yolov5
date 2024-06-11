@@ -4,9 +4,7 @@ from apex_yolov5.log.Logger import Logger
 
 
 class LocalScreenTaker:
-    """
-        本地截图
-    """
+    """本地截图."""
 
     def __init__(self, logger: Logger):
         self.logger = logger

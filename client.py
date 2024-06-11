@@ -45,8 +45,11 @@ def main():
                         continue
                     screenshot = grab_screen_int_array2(sct=sct, monitor=global_config.monitor)
                     global_img_info.set_current_img_2(screenshot, screenshot, screenshot.width, screenshot.height)
-                    data = {"img_origin": screenshot.rgb, "shot_width": screenshot.width,
-                            "shot_height": screenshot.height}
+                    data = {
+                        "img_origin": screenshot.rgb,
+                        "shot_width": screenshot.width,
+                        "shot_height": screenshot.height,
+                    }
                     data = pickle.dumps(data)
                     socket_util.send(client_socket, data, buffer_size=buffer_size)
 
@@ -75,14 +78,20 @@ def main():
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     LogFactory.init_logger()
-    server = Server(logger=LogFactory.logger(),
-                    server_address=(global_config.distributed_param["ip"], global_config.distributed_param["port"]),
-                    screen_taker=LocalScreenTaker(LogFactory.logger()))
+    server = Server(
+        logger=LogFactory.logger(),
+        server_address=(global_config.distributed_param["ip"], global_config.distributed_param["port"]),
+        screen_taker=LocalScreenTaker(LogFactory.logger()),
+    )
     threading.Thread(target=server.wait_client).start()
 
     game_windows_status = GameWindowsStatus(logger=LogFactory.logger())
-    jtk = JoyToKey(logger=LogFactory.logger(), joy_to_key_map=global_config.joy_to_key_map,
-                   c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}), game_windows_status=game_windows_status)
+    jtk = JoyToKey(
+        logger=LogFactory.logger(),
+        joy_to_key_map=global_config.joy_to_key_map,
+        c1_mouse_mover=Win32ApiMover(LogFactory.logger(), {}),
+        game_windows_status=game_windows_status,
+    )
     JoyListener.joy_listener = JoyListener.JoyListener(logger=LogFactory.logger())
     JoyListener.joy_listener.connect_axis(jtk.axis_to_key)
     JoyListener.joy_listener.start(None)

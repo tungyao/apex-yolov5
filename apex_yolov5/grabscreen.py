@@ -39,7 +39,7 @@ def grab_screen(region=None):
     memdc.BitBlt((0, 0), (width, height), srcdc, (left, top), win32con.SRCCOPY)
 
     signedIntsArray = bmp.GetBitmapBits(True)
-    img = np.frombuffer(signedIntsArray, dtype='uint8')
+    img = np.frombuffer(signedIntsArray, dtype="uint8")
     img.shape = (height, width, 4)
 
     srcdc.DeleteDC()
@@ -100,8 +100,9 @@ def get_img_from_cap(monitor):
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
     ret, frame = cap.read()
-    frame = frame[monitor["top"]:monitor["top"] + monitor["height"],
-            monitor["left"]:monitor["left"] + monitor["width"]]
+    frame = frame[
+        monitor["top"] : monitor["top"] + monitor["height"], monitor["left"] : monitor["left"] + monitor["width"]
+    ]
     return frame
 
 
@@ -126,7 +127,7 @@ def save_screen_to_file(j=None, i=None):
     with mss.mss() as sct:
         screenshot = grab_screen_int_array2(sct=sct, monitor=global_config.auto_save_monitor)
     rgb = screenshot.rgb
-    img = np.frombuffer(rgb, dtype='uint8')
+    img = np.frombuffer(rgb, dtype="uint8")
     img = img.reshape((global_config.auto_save_monitor["height"], global_config.auto_save_monitor["width"], 3))
     img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
     image = Image.fromarray(img)
@@ -134,7 +135,7 @@ def save_screen_to_file(j=None, i=None):
     # 格式化日期为字符串
     formatted_date = now.strftime("%Y-%m-%d-%H-%M-%S-%f")[:-3]
     os.makedirs(save_manual_operation_path, exist_ok=True)
-    image.save(save_manual_operation_path + formatted_date + ".png", 'PNG')
+    image.save(save_manual_operation_path + formatted_date + ".png", "PNG")
 
 
 def save_rescreen_and_aims_to_file_with_thread(img_origin, img, aims):
@@ -154,18 +155,21 @@ def save_rescreen_and_aims_to_file_with_thread(img_origin, img, aims):
 
 def save_rescreen_and_aims_to_file(img_origin, img, aims):
     img_origin_size = img_origin.size
-    if not (img_origin_size.width == global_config.auto_save_monitor['width'] and
-            img_origin_size.height == global_config.auto_save_monitor['height']):
+    if not (
+        img_origin_size.width == global_config.auto_save_monitor["width"]
+        and img_origin_size.height == global_config.auto_save_monitor["height"]
+    ):
         from apex_yolov5.socket.yolov5_handler import get_aims
+
         with mss.mss() as sct:
             screenshot = grab_screen_int_array2(sct=sct, monitor=global_config.auto_save_monitor)
         rgb = screenshot.rgb
-        img = np.frombuffer(rgb, dtype='uint8')
+        img = np.frombuffer(rgb, dtype="uint8")
         img = img.reshape((global_config.auto_save_monitor["height"], global_config.auto_save_monitor["width"], 3))
         img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
         aims = get_aims(img)
     elif img is None:
-        img = np.frombuffer(img_origin.rgb, dtype='uint8')
+        img = np.frombuffer(img_origin.rgb, dtype="uint8")
         img = img.reshape((global_config.auto_save_monitor["height"], global_config.auto_save_monitor["width"], 3))
         img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
         # img = cv2.resize(img, (global_config.imgsz, global_config.imgszy))
@@ -197,14 +201,14 @@ def save_img_and_aims_to_file(img, aims):
 
     image = Image.fromarray(img)
     full_save_path = save_image_path + formatted_date + ".png"
-    image.save(full_save_path, 'PNG')
-    with open(save_label_path + formatted_date + ".txt", 'w') as f:
+    image.save(full_save_path, "PNG")
+    with open(save_label_path + formatted_date + ".txt", "w") as f:
         length = len(aims)
         for i in range(length):
             aim = aims[i]
-            line = ' '.join(str(x) for x in aim)
+            line = " ".join(str(x) for x in aim)
             if i != length - 1:
-                f.write(line + '\n')
+                f.write(line + "\n")
             else:
                 f.write(line)
     print("save image to file: {}".format(full_save_path))

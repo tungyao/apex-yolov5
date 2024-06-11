@@ -1,5 +1,4 @@
 class LogUtil:
-
     def __init__(self):
         self.use_time_dict = dict()
 

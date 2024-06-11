@@ -3,14 +3,13 @@ import time
 
 from pynput.mouse import Button
 
-from apex_yolov5.Tools import Tools
 from apex_yolov5.grabscreen import save_screen_to_file
 from apex_yolov5.mouse_mover import MoverFactory
 from apex_yolov5.socket.config import global_config
+from apex_yolov5.Tools import Tools
 
 
 class KeyListener:
-
     def __init__(self):
         super().__init__()
         self.press_key = dict()
@@ -18,10 +17,7 @@ class KeyListener:
         self.toggle_key_map = []
 
     def on_press(self, key):
-        """
-            键盘按下事件
-        :param key:
-        """
+        """键盘按下事件 :param key:"""
         key_name = self.get_key_name(key)
 
         if key_name is not None:
@@ -32,40 +28,37 @@ class KeyListener:
         else:
             self.toggle_key_map.append(key_name)
         for cb in KMCallBack.toggle_call_back:
-            if cb.key_type == 'k' and cb.key == key_name and cb.is_press:
+            if cb.key_type == "k" and cb.key == key_name and cb.is_press:
                 cb.call_back(True, cb.key in self.toggle_key_map)
 
     # 释放按钮，按esc按键会退出监听
     def on_release(self, key):
-        """
-            键盘释放事件
-        :param key:
-        """
+        """键盘释放事件 :param key:"""
         key_name = self.get_key_name(key)
         if key_name is not None and key_name in self.press_key:
             self.press_key.pop(key_name)
         for cb in KMCallBack.toggle_call_back:
-            if cb.key_type == 'k' and cb.key == key_name and not cb.is_press:
+            if cb.key_type == "k" and cb.key == key_name and not cb.is_press:
                 cb.call_back(True, cb.key in self.toggle_key_map)
 
     def is_open(self, button):
         """
-            判断按钮作为开关的开关状态
-        :param button:
+        判断按钮作为开关的开关状态 :param button:
+
         :return:
         """
         return button in self.press_key
 
     def get_key_name(self, key):
         """
-            从key中获取key_name
-        :param key:
+        从key中获取key_name :param key:
+
         :return:
         """
         key_name = None
-        if not hasattr(key, 'name') and hasattr(key, 'char') and key.char is not None:
+        if not hasattr(key, "name") and hasattr(key, "char") and key.char is not None:
             key_name = key.char
-        elif hasattr(key, 'name') and key.name is not None:
+        elif hasattr(key, "name") and key.name is not None:
             key_name = key.name
         return key_name
 
@@ -93,8 +86,7 @@ class MouseListener:
                 move_time_x += 1
             if abs_y > 0:
                 move_time_y += 1
-            self.move_metering = (
-                pre_time, (x, y), metering_x + abs_x, metering_y + abs_y, move_time_x, move_time_y)
+            self.move_metering = (pre_time, (x, y), metering_x + abs_x, metering_y + abs_y, move_time_x, move_time_y)
         else:
             avg_x = 0 if move_time_x == 0 else metering_x / move_time_x
             avg_y = 0 if move_time_y == 0 else metering_y / move_time_y
@@ -114,7 +106,7 @@ class MouseListener:
             else:
                 self.toggle_mouse_key_map.append(button.name)
             for cb in KMCallBack.toggle_call_back:
-                if cb.key_type == 'm' and cb.key == button.name and cb.is_press:
+                if cb.key_type == "m" and cb.key == button.name and cb.is_press:
                     cb.call_back(pressed, cb.key in self.toggle_mouse_key_map)
             # print("左键按下")
         elif not pressed:
@@ -123,7 +115,7 @@ class MouseListener:
             # print("左键释放, 持续时间: {}".format(Tools.current_milli_time() - self.on_mouse_key_map[button]))
             self.on_mouse_key_map.pop(button)
             for cb in KMCallBack.toggle_call_back:
-                if cb.key_type == 'm' and cb.key == button.name and not cb.is_press:
+                if cb.key_type == "m" and cb.key == button.name and not cb.is_press:
                     cb.call_back(pressed, cb.key in self.toggle_mouse_key_map)
 
     def on_scroll(self, x, y, dx, dy):
@@ -152,9 +144,8 @@ class MouseListener:
 
 
 class KMCallBack:
-    """
-        注册键盘或鼠标回调事件
-    """
+    """注册键盘或鼠标回调事件."""
+
     toggle_call_back = []
 
     def __init__(self, key_type, key, call_back, is_press=True):
@@ -166,17 +157,14 @@ class KMCallBack:
 
     @staticmethod
     def connect(callback):
-        """
-            注册事件
-        :param callback:
-        """
+        """注册事件 :param callback:"""
         KMCallBack.toggle_call_back.append(callback)
 
     @staticmethod
     def remove(key_type, key, is_press=True):
         """
-            移除事件
-        :param key_type:
+        移除事件 :param key_type:
+
         :param key:
         :param is_press:
         """

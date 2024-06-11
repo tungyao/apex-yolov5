@@ -5,9 +5,9 @@ from apex_yolov5.mouse_mover.MouseMover import MouseMover
 
 
 class KmBoxNetMover(MouseMover):
-
     def __init__(self, logger: Logger, mouse_mover_param):
         import kmNet
+
         try:
             self.kmNet = kmNet
             # 初始化
@@ -30,9 +30,7 @@ class KmBoxNetMover(MouseMover):
         self.left(0)
 
     def left(self, vk_key: int):
-        """
-            鼠标左键控制 0松开 1按下
-        """
+        """鼠标左键控制 0松开 1按下."""
         # 左键
         self.kmNet.left(1)
         self.kmNet.left(0)
@@ -42,9 +40,8 @@ class KmBoxNetMover(MouseMover):
 
     def move(self, short_x: int, short_y: int):
         """
-        鼠标相对移动
-        x		:鼠标X轴方向移动距离
-        y		:鼠标Y轴方向移动距离
+        鼠标相对移动 x                :鼠标X轴方向移动距离 y           :鼠标Y轴方向移动距离.
+
         返回值：
                 -1：发送失败\n
                 0：发送成功\n
@@ -54,12 +51,12 @@ class KmBoxNetMover(MouseMover):
 
     def destroy(self):
         """
-            销毁
+        销毁
         """
         if self.listener is not None:
             self.listener.stop()
         if self.toggle_key_listener is not None:
-            self.toggle_key_listener.destory()
+            self.toggle_key_listener.destroy()
 
     def click_key(self, value):
         self.kmNet.keydown(value)

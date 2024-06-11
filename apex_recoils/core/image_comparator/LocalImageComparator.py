@@ -9,9 +9,7 @@ from apex_yolov5.log.Logger import Logger
 
 
 class LocalImageComparator:
-    """
-        本地图片对比
-    """
+    """本地图片对比."""
 
     def __init__(self, logger: Logger, base_path):
         self.image_cache = {}
@@ -20,8 +18,8 @@ class LocalImageComparator:
 
     def compare_image(self, img, path_image):
         """
-            图片对比
-        :param img:
+        图片对比 :param img:
+
         :param path_image:
         :return:
         """
@@ -44,22 +42,22 @@ class LocalImageComparator:
 
     def compare_with_path(self, path, images, lock_score, discard_score):
         """
-            截图范围与文件路径内的所有图片对比
-        :param path:
+        截图范围与文件路径内的所有图片对比 :param path:
+
         :param images:
         :param lock_score:
         :param discard_score:
         :return:
         """
         path = self.base_path + path
-        select_name = ''
+        select_name = ""
         score_temp = 0.00000000000000000000
         for img in images:
-            for fileName in [file for file in os.listdir(path) if file.endswith('.png') or file.endswith(".jpg")]:
+            for fileName in [file for file in os.listdir(path) if file.endswith(".png") or file.endswith(".jpg")]:
                 score = self.compare_image(img, path + fileName)
                 if score > score_temp:
                     score_temp = score
-                    select_name = fileName.split('.')[0]
+                    select_name = fileName.split(".")[0]
                 if score_temp > lock_score:
                     break
         if score_temp < discard_score:

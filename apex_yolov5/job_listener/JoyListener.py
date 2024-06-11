@@ -8,9 +8,7 @@ from apex_yolov5.log.Logger import Logger
 
 
 class JoyListener:
-    """
-        手柄监听器
-    """
+    """手柄监听器."""
 
     def __init__(self, logger: Logger):
         self.axis = dict()
@@ -23,8 +21,8 @@ class JoyListener:
 
     def start(self, main_windows):
         """
-            开始监听
-        :param main_windows:
+        开始监听 :param main_windows:
+
         :return:
         """
         try:
@@ -41,9 +39,7 @@ class JoyListener:
             return
 
     def aync(self):
-        """
-            监听手柄按键
-        """
+        """监听手柄按键."""
         self.run_sign = True
         pygame.init()
         pygame.joystick.init()
@@ -62,7 +58,7 @@ class JoyListener:
                 elif event.type == pygame.JOYBUTTONDOWN:
                     for func in self.call_back_list:
                         try:
-                            func('b' + str(event.button))
+                            func("b" + str(event.button))
                         except:
                             traceback.print_exc()
                 if event.type in self.call_back_joystick:
@@ -80,8 +76,8 @@ class JoyListener:
 
     def is_press(self, value):
         """
-            判断手柄按键是否按下
-        :param value:
+        判断手柄按键是否按下 :param value:
+
         :return:
         """
         if value not in self.axis:
@@ -89,23 +85,15 @@ class JoyListener:
         return self.axis[value] > -1.0
 
     def connect_axis(self, func):
-        """
-            连接回调方法
-        :param func:
-        """
+        """连接回调方法 :param func:"""
         self.axis_list.append(func)
 
     def connect_button(self, func):
-        """
-            连接回调方法
-        :param func:
-        """
+        """连接回调方法 :param func:"""
         self.call_back_list.append(func)
 
     def connect_joystick(self, py_type, func):
-        """
-            监听整个joystick
-        """
+        """监听整个joystick."""
         if py_type not in self.call_back_joystick:
             self.call_back_joystick[py_type] = [func]
         else:
@@ -113,7 +101,7 @@ class JoyListener:
 
     def stop(self):
         """
-            销毁
+        销毁
         """
         self.joy_listener = False
 

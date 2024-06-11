@@ -1,13 +1,12 @@
 import time
 import traceback
 
-from PyQt5.QtCore import QPoint, QRect, QEvent, QThread, pyqtSignal, Qt
-from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen, QColor
-from PyQt5.QtWidgets import QMainWindow, QLabel
-from PyQt5.QtWidgets import QVBoxLayout, QWidget
+from PyQt5.QtCore import QEvent, QPoint, QRect, Qt, QThread, pyqtSignal
+from PyQt5.QtGui import QColor, QImage, QPainter, QPen, QPixmap
+from PyQt5.QtWidgets import QLabel, QMainWindow, QVBoxLayout, QWidget
 
-from apex_yolov5.Tools import Tools
 from apex_yolov5.socket.config import global_config
+from apex_yolov5.Tools import Tools
 
 
 class DebugWindow(QMainWindow):
@@ -21,10 +20,10 @@ class DebugWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        if not hasattr(self, 'image_label'):
+        if not hasattr(self, "image_label"):
             self.image_label = None
             self.init_ui()
-            self.image_queue = Tools.GetBlockQueue(name='show_image_queue', maxsize=100)
+            self.image_queue = Tools.GetBlockQueue(name="show_image_queue", maxsize=100)
             # 实例化对象
             self.show_image_thread = ShowImageThread(self.image_queue)
             # 信号连接到界面显示槽函数
@@ -88,9 +87,8 @@ class DebugWindow(QMainWindow):
 
 
 class ShowImageThread(QThread):
-    """
-        使用信号槽来多线程更新ui
-    """
+    """使用信号槽来多线程更新ui."""
+
     signal = pyqtSignal(object)
 
     def __init__(self, queue: Tools.GetBlockQueue):
@@ -98,9 +96,7 @@ class ShowImageThread(QThread):
         self.queue = queue
 
     def run(self):
-        """
-            避免多线程影响ui，在一个线程中启动队列消费打印
-        """
+        """避免多线程影响ui，在一个线程中启动队列消费打印."""
         while True:
             try:
                 data = self.queue.get()

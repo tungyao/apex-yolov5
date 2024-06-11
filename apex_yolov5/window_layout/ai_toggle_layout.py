@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QVBoxLayout, QLabel, QCheckBox, QHBoxLayout, QComboBox, QLineEdit
+from PyQt5.QtWidgets import QCheckBox, QComboBox, QHBoxLayout, QLabel, QLineEdit, QVBoxLayout
 
 from apex_yolov5.KeyAndMouseListener import KMCallBack
 
@@ -28,7 +28,6 @@ class AiToggleLayout:
         self.recoils_toggle_switch.setChecked(self.config.recoils_toggle)
         toggle_layout.addWidget(self.ai_toggle_switch)
 
-
         self.ai_toggle_type_label = QLabel("开关键配置")
         self.ai_toggle_type_combo_box = QComboBox()
 
@@ -56,7 +55,8 @@ class AiToggleLayout:
         self.toggle_key_edit.setText(self.config.ai_toggle_key)
         self.recoils_toggle_switch.setChecked(self.config.recoils_toggle)
         KMCallBack.connect(
-            KMCallBack(self.config.ai_toggle_type, self.config.ai_toggle_key, self.handle_middle_toggled))
+            KMCallBack(self.config.ai_toggle_type, self.config.ai_toggle_key, self.handle_middle_toggled)
+        )
 
     def handle_ai_toggled(self, checked):
         self.config.set_config("ai_toggle", checked)
@@ -79,5 +79,4 @@ class AiToggleLayout:
         KMCallBack.remove(self.config.ai_toggle_type, self.config.ai_toggle_key)
         self.config.set_config("ai_toggle_type", selected_key)
         self.config.set_config("ai_toggle_key", self.toggle_key_edit.text())
-        KMCallBack.connect(
-            KMCallBack(selected_key, self.toggle_key_edit.text(), self.handle_middle_toggled))
+        KMCallBack.connect(KMCallBack(selected_key, self.toggle_key_edit.text(), self.handle_middle_toggled))

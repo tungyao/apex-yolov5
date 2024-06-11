@@ -4,9 +4,7 @@ from apex_yolov5.log.Logger import Logger
 
 
 class LocalMssScreenTaker:
-    """
-        本地截图
-    """
+    """本地截图."""
 
     def __init__(self, logger: Logger):
         self.logger = logger
@@ -22,7 +20,8 @@ class LocalMssScreenTaker:
         try:
             with mss.mss() as sct:
                 return list(
-                    sct.grab({'top': bbox[1], 'left': bbox[0], 'width': bbox[2] - bbox[0], 'height': bbox[3] - bbox[1]})
-                    for bbox in bbox_list)
+                    sct.grab({"top": bbox[1], "left": bbox[0], "width": bbox[2] - bbox[0], "height": bbox[3] - bbox[1]})
+                    for bbox in bbox_list
+                )
         except Exception as e:
             self.logger.print_log(f"Error in get_images_from_bbox: {e}")

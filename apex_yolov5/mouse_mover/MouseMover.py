@@ -1,28 +1,26 @@
-from ctypes import Structure, c_ulong, byref, windll
+from ctypes import Structure, byref, c_ulong, windll
+
 import win32api
 import win32con
 
 
 class PointAPI(Structure):
-    """
-        坐标API结构体
-    """
+    """坐标API结构体."""
+
     # PointAPI类型,用于获取鼠标坐标
     _fields_ = [("x", c_ulong), ("y", c_ulong)]
 
 
 class MouseMover:
-    """
-        鼠标移动抽象
-    """
+    """鼠标移动抽象."""
 
     def __init__(self, mouse_mover_param):
         self.mouse_mover_param = mouse_mover_param
 
     def move_rp(self, x: int, y: int, re_cut_size=0):
         """
-            鼠标移动，原生移动
-        :param x:
+        鼠标移动，原生移动 :param x:
+
         :param y:
         :param re_cut_size:
         """
@@ -30,34 +28,24 @@ class MouseMover:
 
     def move(self, x: int, y: int):
         """
-            鼠标移动，盒子移动
-        :param x:
+        鼠标移动，盒子移动 :param x:
+
         :param y:
         """
         pass
 
     def left_click(self):
-        """
-            点击按键
-        :param button:
-        """
+        """点击按键 :param button:"""
         pass
 
     def get_position(self):
-        """
-            获取鼠标位置
-        """
+        """获取鼠标位置."""
         po = PointAPI()
         windll.user32.GetCursorPos(byref(po))
         return int(po.x), int(po.y)
 
     def is_num_locked(self):
-        """
-            使用ctypes获取键盘状态信息
-            0x90 是Num Lock键的虚拟键码
-            返回值是一个表示键盘状态的整数，最低位bit为1表示Num Lock被锁定
-        :return:
-        """
+        """使用ctypes获取键盘状态信息 0x90 是Num Lock键的虚拟键码 返回值是一个表示键盘状态的整数，最低位bit为1表示Num Lock被锁定 :return:"""
         key_state = windll.user32.GetKeyState(0x90)
 
         # 判断Num Lock键的状态
@@ -67,12 +55,7 @@ class MouseMover:
         return num_lock_state == 1
 
     def is_caps_locked(self):
-        """
-        使用ctypes获取键盘状态信息
-        0x14 是Caps Lock键的虚拟键码
-        返回值是一个表示键盘状态的整数，最低位bit为1表示Caps Lock被锁定
-        :return:
-        """
+        """使用ctypes获取键盘状态信息 0x14 是Caps Lock键的虚拟键码 返回值是一个表示键盘状态的整数，最低位bit为1表示Caps Lock被锁定 :return:"""
         key_state = windll.user32.GetKeyState(0x14)
 
         # 判断Caps Lock键的状态
@@ -83,7 +66,7 @@ class MouseMover:
 
     def destroy(self):
         """
-            销毁
+        销毁
         """
         pass
 
@@ -92,8 +75,8 @@ class MouseMover:
 
     def mouse_click(self, key, press):
         """
-            点击鼠标
-        :param key:
+        点击鼠标 :param key:
+
         :param press:
         """
         if key == "left":
@@ -108,27 +91,19 @@ class MouseMover:
                 self.right_up()
 
     def left_down(self):
-        """
-            左键按下
-        """
+        """左键按下."""
         pass
 
     def left_up(self):
-        """
-            左键弹起
-        """
+        """左键弹起."""
         pass
 
     def right_down(self):
-        """
-            右键按下
-        """
+        """右键按下."""
         pass
 
     def right_up(self):
-        """
-            右键弹起
-        """
+        """右键弹起."""
         pass
 
     def click_key(self, value):
@@ -140,21 +115,15 @@ class MouseMover:
         pass
 
     def key_down(self, value):
-        """
-            按下按键
-        """
+        """按下按键."""
         pass
 
     def key_up(self, value):
-        """
-            松开按键
-        """
+        """松开按键."""
         pass
 
     def toggle_caps_lock(self, lock_status):
-        """
-        切换Caps Lock键的状态
-        """
+        """切换Caps Lock键的状态."""
         if self.is_caps_locked() ^ lock_status:
             # 模拟按下Caps Lock键
             win32api.keybd_event(win32con.VK_CAPITAL, 0, win32con.KEYEVENTF_EXTENDEDKEY, 0)

@@ -6,12 +6,12 @@ import traceback
 
 from pynput.mouse import Button
 
-from apex_yolov5.job_listener.JoyListener import get_joy_listener
-from apex_yolov5.KeyAndMouseListener import apex_mouse_listener, apex_key_listener
 from apex_recoils.core.SelectGun import get_select_gun
-from apex_yolov5.Tools import Tools
+from apex_yolov5.job_listener.JoyListener import get_joy_listener
+from apex_yolov5.KeyAndMouseListener import apex_key_listener, apex_mouse_listener
 from apex_yolov5.mouse_mover import MoverFactory
 from apex_yolov5.socket.config import global_config
+from apex_yolov5.Tools import Tools
 
 intention = None
 executed_intention = (0, 0)
@@ -23,7 +23,7 @@ last_click_time = 0
 click_interval = 0.01
 click_sign = False
 
-block_queue = Tools.GetBlockQueue(name='auxiliary_queue')
+block_queue = Tools.GetBlockQueue(name="auxiliary_queue")
 intention_lock = threading.Lock()
 intention_exec_sign = False
 
@@ -104,15 +104,17 @@ def get_lock_mode():
     controller_aim = get_joy_listener().is_press(5)
     mouse_only_fire = apex_mouse_listener.is_press(Button.left) and not apex_mouse_listener.is_press(Button.right)
     controller_only_fire = get_joy_listener().is_press(4) and not get_joy_listener().is_press(5)
-    fire, aim, only_fire = (controller_fire, controller_aim, controller_only_fire) \
-        if global_config.joy_move \
+    fire, aim, only_fire = (
+        (controller_fire, controller_aim, controller_only_fire)
+        if global_config.joy_move
         else (mouse_fire, mouse_aim, mouse_only_fire)
+    )
     lock_mode = (
-            ("left" in global_config.aim_button and fire) or
-            ("right" in global_config.aim_button and aim) or
-            ("x2" in global_config.aim_button and apex_mouse_listener.is_press(Button.x2)) or
-            ("x1" in global_config.aim_button and apex_mouse_listener.is_press(Button.x1)) or
-            ("x1&!x2" in global_config.aim_button and only_fire)
+        ("left" in global_config.aim_button and fire)
+        or ("right" in global_config.aim_button and aim)
+        or ("x2" in global_config.aim_button and apex_mouse_listener.is_press(Button.x2))
+        or ("x1" in global_config.aim_button and apex_mouse_listener.is_press(Button.x1))
+        or ("x1&!x2" in global_config.aim_button and only_fire)
     )
     lock_mode = lock_mode or len(global_config.aim_button) == 0
     lock = lock_mode and global_config.ai_toggle
@@ -149,37 +151,49 @@ def start():
         # sleep_time = 0.01
         block_queue.get()
         intention_exec_sign = True
-        if click_sign and time.time() - last_click_time > click_interval and get_select_gun().current_gun in global_config.click_gun:
+        if (
+            click_sign
+            and time.time() - last_click_time > click_interval
+            and get_select_gun().current_gun in global_config.click_gun
+        ):
             MoverFactory.mouse_mover().left_click()
             last_click_time = time.time()
             click_sign = False
-        elif global_config.auto_charged_energy and get_select_gun().current_gun == '充能步枪' and time.time() - last_click_time > global_config.storage_interval and not apex_key_listener.is_open(
-                global_config.auto_charged_energy_toggle):
+        elif (
+            global_config.auto_charged_energy
+            and get_select_gun().current_gun == "充能步枪"
+            and time.time() - last_click_time > global_config.storage_interval
+            and not apex_key_listener.is_open(global_config.auto_charged_energy_toggle)
+        ):
             MoverFactory.mouse_mover().left_click()
             last_click_time = time.time()
         lock_mode_shoot = get_lock_mode_shoot()
         if lock_mode_shoot and intention is not None:
             # t0 = time.time()
             (x, y) = intention
-            if (global_config.mouse_model in global_config.available_mouse_smoothing
-                    and global_config.mouse_smoothing_switch):
+            if (
+                global_config.mouse_model in global_config.available_mouse_smoothing
+                and global_config.mouse_smoothing_switch
+            ):
                 # print("开始移动，移动距离:{}".format((x, y)))
                 while (x != 0 or y != 0) and get_lock_mode_shoot():
                     intention_lock.acquire()
                     try:
                         (x, y) = intention
                         if apex_mouse_listener.is_press(Button.right):
-                            move_step_temp, move_step_y_temp = random_move(x, y,
-                                                                           (global_config.aim_move_step,
-                                                                            global_config.aim_move_step_y),
-                                                                           (global_config.aim_move_step_max,
-                                                                            global_config.aim_move_step_y_max))
+                            move_step_temp, move_step_y_temp = random_move(
+                                x,
+                                y,
+                                (global_config.aim_move_step, global_config.aim_move_step_y),
+                                (global_config.aim_move_step_max, global_config.aim_move_step_y_max),
+                            )
                         else:
-                            move_step_temp, move_step_y_temp = random_move(x, y,
-                                                                           (global_config.move_step,
-                                                                            global_config.move_step_y),
-                                                                           (global_config.move_step_max,
-                                                                            global_config.move_step_y_max))
+                            move_step_temp, move_step_y_temp = random_move(
+                                x,
+                                y,
+                                (global_config.move_step, global_config.move_step_y),
+                                (global_config.move_step_max, global_config.move_step_y_max),
+                            )
 
                         if global_config.dynamic_mouse_move:
                             move_step_temp = max(apex_mouse_listener.move_avg_x, move_step_temp)
@@ -187,13 +201,17 @@ def start():
 
                         # 多级瞄速计算
                         if global_config.multi_stage_aiming_speed_toggle:
-                            multi_stage_aiming_speed = global_config.aim_multi_stage_aiming_speed \
-                                if apex_mouse_listener.is_press(
-                                Button.right) else global_config.multi_stage_aiming_speed
-                            move_step_temp = calculate_percentage_value(multi_stage_aiming_speed, x, move_step_temp,
-                                                                        global_config.based_on_character_box)
-                            move_step_y_temp = calculate_percentage_value(multi_stage_aiming_speed, y, move_step_y_temp,
-                                                                          global_config.based_on_character_box)
+                            multi_stage_aiming_speed = (
+                                global_config.aim_multi_stage_aiming_speed
+                                if apex_mouse_listener.is_press(Button.right)
+                                else global_config.multi_stage_aiming_speed
+                            )
+                            move_step_temp = calculate_percentage_value(
+                                multi_stage_aiming_speed, x, move_step_temp, global_config.based_on_character_box
+                            )
+                            move_step_y_temp = calculate_percentage_value(
+                                multi_stage_aiming_speed, y, move_step_y_temp, global_config.based_on_character_box
+                            )
                         # print(str(move_step_temp) + ":" + str(move_step_y_temp))
                         intention, move_up, move_down = split_coordinate(x, y, move_step_temp, move_step_y_temp)
                         incr_executed_intention(move_up, move_down)
@@ -239,19 +257,19 @@ def start():
 
 def random_move(x, y, move_step, move_step_max, move_optimization=True):
     """
-        随机移动方法
-    :param x:
+    随机移动方法 :param x:
+
     :param y:
-    :param move_step:
-    :param move_step_max
-    :param move_optimization
+    :param move_step: :param move_step_max :param move_optimization
     :return:
     """
     move_step_temp, move_step_y_temp = move_step
     move_step_temp_max, move_step_y_temp_max = move_step_max
 
-    move_step, move_step_y = (random.randint(move_step_temp, move_step_temp_max),
-                              random.randint(move_step_y_temp, move_step_y_temp_max))
+    move_step, move_step_y = (
+        random.randint(move_step_temp, move_step_temp_max),
+        random.randint(move_step_y_temp, move_step_y_temp_max),
+    )
     if move_optimization and x > 0 and y > 0:
         x_moving_ratio = x / y
         if x_moving_ratio <= 0.5:
@@ -283,14 +301,14 @@ def split_coordinate(x, y, move_step_temp, move_step_y_temp):
 
 
 def calculate_distance(x, y):
-    distance = math.sqrt(x ** 2 + y ** 2)
+    distance = math.sqrt(x**2 + y**2)
     # 将结果取整，如果为0则取1
     return max(1, round(distance))
 
 
 def find_range_index(ranges, num):
     for i, range_arr in enumerate(ranges):
-        for (start_num, end) in range_arr:
+        for start_num, end in range_arr:
             if start_num <= num <= end:
                 return i
     return None
@@ -316,7 +334,7 @@ def calculate_percentage_value(arr, m, n, based_on_character_box):
 
 def find_range_index_2(ranges, num):
     for i, range_arr in enumerate(ranges):
-        for (start_num, end) in range_arr:
+        for start_num, end in range_arr:
             if start_num * intention_base_sign <= num <= end * intention_base_sign:
                 return i
     return None

@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QVBoxLayout, QLabel, QCheckBox, QHBoxLayout, QSlider, QLineEdit
+from PyQt5.QtWidgets import QCheckBox, QHBoxLayout, QLabel, QLineEdit, QSlider, QVBoxLayout
 
 
 class AutoChargedEnergyLayout:
@@ -53,9 +53,6 @@ class AutoChargedEnergyLayout:
         self.auto_charged_energy_toggle.setText(str(self.config.auto_charged_energy_toggle))
 
     def save_config(self):
-        self.config.set_config("storage_interval",
-                               self.storage_interval_slider.value() / 1000)
-        self.config.set_config("auto_charged_energy",
-                               self.auto_charged_energy_switch.isChecked())
-        self.config.set_config("auto_charged_energy_toggle",
-                               self.auto_charged_energy_toggle.text())
+        self.config.set_config("storage_interval", self.storage_interval_slider.value() / 1000)
+        self.config.set_config("auto_charged_energy", self.auto_charged_energy_switch.isChecked())
+        self.config.set_config("auto_charged_energy_toggle", self.auto_charged_energy_toggle.text())

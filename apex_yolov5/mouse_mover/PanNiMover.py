@@ -23,6 +23,7 @@ class PanNiMover(MouseMover):
             self.screenY = user32.GetSystemMetrics(79)
         else:
             import tkinter
+
             root = tkinter.Tk()
             self.screenX = root.winfo_vrootwidth()
             self.screenY = root.winfo_vrootheight()
@@ -43,16 +44,13 @@ class PanNiMover(MouseMover):
         self.Close()
 
     def OpenDevice(self, pid, vid):
-        """
-            打开默认设备
-        :return:
-        """
+        """打开默认设备 :return:"""
         return self.OpenDeviceByID(pid, vid)
 
     def OpenDeviceByID(self, vid, pid):
         """
-            通过pid vid打开设备
-        :param vid:
+        通过pid vid打开设备 :param vid:
+
         :param pid:
         :return:
         """
@@ -95,7 +93,7 @@ class PanNiMover(MouseMover):
         if dat:
             buf[1] = len(dat) + 1
             buf.extend(dat)
-        buf.extend([0xff] * (64 - len(buf)))
+        buf.extend([0xFF] * (64 - len(buf)))
         ret = self.dev.write(buf)
         # print(ret)
         if ret < 0:
@@ -128,7 +126,7 @@ class PanNiMover(MouseMover):
         try:
             ret = self.dev.read(64, timeout)
             if ret and ret[0] == 31:
-                return ret[2], ret[3:ret[1] + 2]
+                return ret[2], ret[3 : ret[1] + 2]
             else:
                 return None
         except OSError:
@@ -144,7 +142,7 @@ class PanNiMover(MouseMover):
         ret = self.read_data_timeout_promise(9, 10)
         if not ret:
             return -1
-        result = int.from_bytes(ret, byteorder='little', signed=True)
+        result = int.from_bytes(ret, byteorder="little", signed=True)
         result += 113666
         return ctypes.c_int32(result).value
 
@@ -157,7 +155,7 @@ class PanNiMover(MouseMover):
         ret = self.read_data_timeout_promise(2, 10)
         if not ret:
             return -1
-        result = int.from_bytes(ret, byteorder='little', signed=True)
+        result = int.from_bytes(ret, byteorder="little", signed=True)
         return result
 
     def SetWaitRespon(self, wait):
@@ -170,9 +168,7 @@ class PanNiMover(MouseMover):
         self.read_data_timeout_promise(39, 10)
 
     def Close(self):
-        """
-            关闭盒子
-        """
+        """关闭盒子."""
         if self.dev:
             self.dev.close()
             self.dev = None
@@ -184,15 +180,15 @@ class PanNiMover(MouseMover):
 
     def mouse_event(self, e, x=0, y=0, extra1=0, extra2=0):
         """
-            鼠标事件
-        :param e:
+        鼠标事件 :param e:
+
         :param x:
         :param y:
         :param extra1:
         :param extra2:
         :return:
         """
-        cmd = [0xff] * 12
+        cmd = [0xFF] * 12
         cmd[0] = e
         if e >= 1 and e <= 7:
             pass
@@ -211,10 +207,10 @@ class PanNiMover(MouseMover):
 
             x = int((x << 15) / screenx)
             y = int((y << 15) / screeny)
-            cmd[1] = (x >> 8) & 0xff
-            cmd[2] = x & 0xff
-            cmd[3] = (y >> 8) & 0xff
-            cmd[4] = y & 0xff
+            cmd[1] = (x >> 8) & 0xFF
+            cmd[2] = x & 0xFF
+            cmd[3] = (y >> 8) & 0xFF
+            cmd[4] = y & 0xFF
         elif e == 9:
             if x < -128 or x > 127 or y < -128 or y > 127:
                 return
@@ -223,10 +219,10 @@ class PanNiMover(MouseMover):
         elif e == 91:
             if x < -32768 or x > 32767 or y < -32768 or y > 32767:
                 return
-            cmd[1] = (x >> 8) & 0xff
-            cmd[2] = x & 0xff
-            cmd[3] = (y >> 8) & 0xff
-            cmd[4] = y & 0xff
+            cmd[1] = (x >> 8) & 0xFF
+            cmd[2] = x & 0xFF
+            cmd[3] = (y >> 8) & 0xFF
+            cmd[4] = y & 0xFF
         elif e == 10:
             if x < -128 or x > 127:
                 return
@@ -237,29 +233,29 @@ class PanNiMover(MouseMover):
             if y < 0:
                 y = 0
 
-            cmd[1] = (x >> 8) & 0xff
-            cmd[2] = x & 0xff
-            cmd[3] = (y >> 8) & 0xff
-            cmd[4] = y & 0xff
+            cmd[1] = (x >> 8) & 0xFF
+            cmd[2] = x & 0xFF
+            cmd[3] = (y >> 8) & 0xFF
+            cmd[4] = y & 0xFF
             screenx = self.screenX
             screeny = self.screenY
-            cmd[5] = (screenx >> 8) & 0xff
-            cmd[6] = screenx & 0xff
-            cmd[7] = (screeny >> 8) & 0xff
-            cmd[8] = screeny & 0xff
+            cmd[5] = (screenx >> 8) & 0xFF
+            cmd[6] = screenx & 0xFF
+            cmd[7] = (screeny >> 8) & 0xFF
+            cmd[8] = screeny & 0xFF
             cmd[9] = extra1
             cmd[10] = extra2
         elif e == 12:
-            cmd[1] = (x >> 8) & 0xff
-            cmd[2] = x & 0xff
-            cmd[3] = (y >> 8) & 0xff
-            cmd[4] = y & 0xff
+            cmd[1] = (x >> 8) & 0xFF
+            cmd[2] = x & 0xFF
+            cmd[3] = (y >> 8) & 0xFF
+            cmd[4] = y & 0xFF
             screenx = self.screenX
             screeny = self.screenY
-            cmd[5] = (screenx >> 8) & 0xff
-            cmd[6] = screenx & 0xff
-            cmd[7] = (screeny >> 8) & 0xff
-            cmd[8] = screeny & 0xff
+            cmd[5] = (screenx >> 8) & 0xFF
+            cmd[6] = screenx & 0xFF
+            cmd[7] = (screeny >> 8) & 0xFF
+            cmd[8] = screeny & 0xFF
             cmd[9] = extra1
             cmd[10] = extra2
         elif e == 13 or e == 14:
@@ -270,11 +266,11 @@ class PanNiMover(MouseMover):
 
     def key_event(self, e, key):
         """
-            键盘事件
-        :param e:
+        键盘事件 :param e:
+
         :param key:
         """
-        cmd = [e, 0xff]
+        cmd = [e, 0xFF]
         if isinstance(key, str):
             key = self.GetScanCodeFromKeyName(key)
         cmd[1] = key
@@ -300,30 +296,126 @@ class PanNiMover(MouseMover):
     @staticmethod
     def GetScanCodeFromKeyName(keyname):
         """
-            键值表
-        :param keyname:
+        键值表 :param keyname:
+
         :return:
         """
         keymap = {
-            "a": 4, "b": 5, "c": 6, "d": 7, "e": 8, "f": 9, "g": 10, "h": 11, "i": 12, "j": 13, "k": 14, "l": 15,
-            "m": 16, "n": 17, "o": 18, "p": 19, "q": 20,
-            "r": 21, "s": 22, "t": 23, "u": 24, "v": 25, "w": 26, "x": 27, "y": 28, "z": 29, "1": 30, "2": 31, "3": 32,
-            "4": 33, "5": 34, "6": 35, "7": 36,
-            "8": 37, "9": 38, "0": 39, "enter": 40, "esc": 41, "backspace": 42, "tab": 43, "space": 44, " ": 44,
-            "空格键": 44, "-": 45, "=": 46, "[": 47, "]": 48,
-            "\\": 49, ";": 51, "'": 52, "`": 53, ",": 54, ".": 55, "/": 56, "capslock": 57, "f1": 58, "f2": 59,
-            "f3": 60, "f4": 61, "f5": 62, "f6": 63, "f7": 64,
-            "f8": 65, "f9": 66, "f10": 67, "f11": 68, "f12": 69, "printscreen": 70, "scrolllock": 71, "pause": 72,
-            "break": 72, "insert": 73, "home": 74,
-            "pageup": 75, "delete": 76, "end": 77, "pagedown": 78, "right": 79, "left": 80, "down": 81, "up": 82,
-            "numlock": 83, "小键盘/": 84, "小键盘*": 85,
-            "小键盘-": 86, "小键盘+": 87, "小键盘enter": 88, "小键盘1": 89, "小键盘2": 90, "小键盘3": 91, "小键盘4": 92,
-            "小键盘5": 93, "小键盘6": 94,
-            "小键盘7": 95, "小键盘8": 96, "小键盘9": 97, "小键盘0": 98, "小键盘.": 99, "menu": 101, "小键盘=": 103,
-            "静音": 127, "音量加": 128, "音量减": 129,
-            "lctrl": 224, "lshift": 225, "lalt": 226, "lwin": 227, "rctrl": 228, "rshift": 229, "ralt": 230,
+            "a": 4,
+            "b": 5,
+            "c": 6,
+            "d": 7,
+            "e": 8,
+            "f": 9,
+            "g": 10,
+            "h": 11,
+            "i": 12,
+            "j": 13,
+            "k": 14,
+            "l": 15,
+            "m": 16,
+            "n": 17,
+            "o": 18,
+            "p": 19,
+            "q": 20,
+            "r": 21,
+            "s": 22,
+            "t": 23,
+            "u": 24,
+            "v": 25,
+            "w": 26,
+            "x": 27,
+            "y": 28,
+            "z": 29,
+            "1": 30,
+            "2": 31,
+            "3": 32,
+            "4": 33,
+            "5": 34,
+            "6": 35,
+            "7": 36,
+            "8": 37,
+            "9": 38,
+            "0": 39,
+            "enter": 40,
+            "esc": 41,
+            "backspace": 42,
+            "tab": 43,
+            "space": 44,
+            " ": 44,
+            "空格键": 44,
+            "-": 45,
+            "=": 46,
+            "[": 47,
+            "]": 48,
+            "\\": 49,
+            ";": 51,
+            "'": 52,
+            "`": 53,
+            ",": 54,
+            ".": 55,
+            "/": 56,
+            "capslock": 57,
+            "f1": 58,
+            "f2": 59,
+            "f3": 60,
+            "f4": 61,
+            "f5": 62,
+            "f6": 63,
+            "f7": 64,
+            "f8": 65,
+            "f9": 66,
+            "f10": 67,
+            "f11": 68,
+            "f12": 69,
+            "printscreen": 70,
+            "scrolllock": 71,
+            "pause": 72,
+            "break": 72,
+            "insert": 73,
+            "home": 74,
+            "pageup": 75,
+            "delete": 76,
+            "end": 77,
+            "pagedown": 78,
+            "right": 79,
+            "left": 80,
+            "down": 81,
+            "up": 82,
+            "numlock": 83,
+            "小键盘/": 84,
+            "小键盘*": 85,
+            "小键盘-": 86,
+            "小键盘+": 87,
+            "小键盘enter": 88,
+            "小键盘1": 89,
+            "小键盘2": 90,
+            "小键盘3": 91,
+            "小键盘4": 92,
+            "小键盘5": 93,
+            "小键盘6": 94,
+            "小键盘7": 95,
+            "小键盘8": 96,
+            "小键盘9": 97,
+            "小键盘0": 98,
+            "小键盘.": 99,
+            "menu": 101,
+            "小键盘=": 103,
+            "静音": 127,
+            "音量加": 128,
+            "音量减": 129,
+            "lctrl": 224,
+            "lshift": 225,
+            "lalt": 226,
+            "lwin": 227,
+            "rctrl": 228,
+            "rshift": 229,
+            "ralt": 230,
             "rwin": 231,
-            "ctrl": 224, "shift": 225, "alt": 226, "win": 227
+            "ctrl": 224,
+            "shift": 225,
+            "alt": 226,
+            "win": 227,
         }
         keyname = keyname.lower()
         if keyname in keymap:
@@ -375,22 +467,16 @@ class PanNiMover(MouseMover):
 
 # -*- coding: utf-8 -*-
 
-from ctypes import *
 import platform
+from ctypes import *
 
 
 class GUID(Structure):
-    _fields_ = [("Data1", c_ulong),
-                ("Data2", c_ushort),
-                ("Data3", c_ushort),
-                ("Data4", c_ubyte * 8)]
+    _fields_ = [("Data1", c_ulong), ("Data2", c_ushort), ("Data3", c_ushort), ("Data4", c_ubyte * 8)]
 
 
 class SP_DEVICE_INTERFACE_DATA(Structure):
-    _fields_ = [("cbSize", c_ulong),
-                ("InterfaceClassGuid", GUID),
-                ("Flags", c_ulong),
-                ("Reserved", c_ulong)]
+    _fields_ = [("cbSize", c_ulong), ("InterfaceClassGuid", GUID), ("Flags", c_ulong), ("Reserved", c_ulong)]
 
 
 def SP_DATA_A_factory(length):
@@ -401,19 +487,26 @@ def SP_DATA_A_factory(length):
 
 
 class HID:
-    """
-
-    """
+    """"""
 
     def __init__(self):
         self.setupapi_dll = WinDLL("setupapi.dll")
-        info_value = [c_ulong(0x4d1e55b2), c_ushort(0xf16f), c_ushort(0x11cf),
-                      (c_ubyte * 8)(0x88, 0xcb, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30)]
+        info_value = [
+            c_ulong(0x4D1E55B2),
+            c_ushort(0xF16F),
+            c_ushort(0x11CF),
+            (c_ubyte * 8)(0x88, 0xCB, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30),
+        ]
         self.InterfaceClassGuid = GUID(*info_value)
         self.handle = None
         self.setupapi_dll.SetupDiGetClassDevsA.restype = c_void_p
         self.setupapi_dll.SetupDiEnumDeviceInterfaces.argtypes = (
-            c_void_p, c_void_p, POINTER(GUID), c_ulong, POINTER(SP_DEVICE_INTERFACE_DATA))
+            c_void_p,
+            c_void_p,
+            POINTER(GUID),
+            c_ulong,
+            POINTER(SP_DEVICE_INTERFACE_DATA),
+        )
 
     def __del__(self):
         self.close()
@@ -434,9 +527,9 @@ class HID:
                 else:
                     info_value = [c_ulong(28), self.InterfaceClassGuid, 0, 0]
                 device_interface_data = SP_DEVICE_INTERFACE_DATA(*info_value)
-                ret = self.setupapi_dll.SetupDiEnumDeviceInterfaces(device_info_set, None,
-                                                                    pointer(self.InterfaceClassGuid), device_index,
-                                                                    byref(device_interface_data))
+                ret = self.setupapi_dll.SetupDiEnumDeviceInterfaces(
+                    device_info_set, None, pointer(self.InterfaceClassGuid), device_index, byref(device_interface_data)
+                )
                 if not ret:
                     err = GetLastError()
                     if err != 259:
@@ -445,24 +538,38 @@ class HID:
                 required_size = c_ulong(0)
                 SP_DATA_A = SP_DATA_A_factory(8)
                 self.setupapi_dll.SetupDiGetDeviceInterfaceDetailA.argtypes = (
-                    c_void_p, POINTER(SP_DEVICE_INTERFACE_DATA), POINTER(SP_DATA_A), c_ulong, POINTER(c_ulong),
-                    c_void_p)
-                ret = self.setupapi_dll.SetupDiGetDeviceInterfaceDetailA(device_info_set,
-                                                                         pointer(device_interface_data), None, 0,
-                                                                         byref(required_size), None)
+                    c_void_p,
+                    POINTER(SP_DEVICE_INTERFACE_DATA),
+                    POINTER(SP_DATA_A),
+                    c_ulong,
+                    POINTER(c_ulong),
+                    c_void_p,
+                )
+                ret = self.setupapi_dll.SetupDiGetDeviceInterfaceDetailA(
+                    device_info_set, pointer(device_interface_data), None, 0, byref(required_size), None
+                )
                 # print(required_size.value)
                 SP_DATA_A = SP_DATA_A_factory(required_size.value)
                 self.setupapi_dll.SetupDiGetDeviceInterfaceDetailA.argtypes = (
-                    c_void_p, POINTER(SP_DEVICE_INTERFACE_DATA), POINTER(SP_DATA_A), c_ulong, POINTER(c_ulong),
-                    c_void_p)
+                    c_void_p,
+                    POINTER(SP_DEVICE_INTERFACE_DATA),
+                    POINTER(SP_DATA_A),
+                    c_ulong,
+                    POINTER(c_ulong),
+                    c_void_p,
+                )
                 if platform.architecture()[0] == "64bit":
-                    device_interface_detail_data = SP_DATA_A(*[8, b''])
+                    device_interface_detail_data = SP_DATA_A(*[8, b""])
                 else:
-                    device_interface_detail_data = SP_DATA_A(*[5, b''])
-                ret = self.setupapi_dll.SetupDiGetDeviceInterfaceDetailA(device_info_set,
-                                                                         pointer(device_interface_data),
-                                                                         byref(device_interface_detail_data),
-                                                                         required_size, None, None)
+                    device_interface_detail_data = SP_DATA_A(*[5, b""])
+                ret = self.setupapi_dll.SetupDiGetDeviceInterfaceDetailA(
+                    device_info_set,
+                    pointer(device_interface_data),
+                    byref(device_interface_detail_data),
+                    required_size,
+                    None,
+                    None,
+                )
                 # print(ret)
                 if ret:
                     # print(device_interface_detail_data.DevicePath)
@@ -483,16 +590,14 @@ class HID:
         :param path:
         :return:
         """
-        handle = windll.kernel32.CreateFileA(c_char_p(bytes(path, "gbk")), 0xc0000000, 3, None, 3, 0x00000080, 0)
+        handle = windll.kernel32.CreateFileA(c_char_p(bytes(path, "gbk")), 0xC0000000, 3, None, 3, 0x00000080, 0)
         if handle == -1:
             return False
         self.handle = handle
         return True
 
     def close(self):
-        """
-
-        """
+        """"""
         if self.handle:
             windll.kernel32.CancelIo(self.handle)
             windll.kernel32.CloseHandle(self.handle)

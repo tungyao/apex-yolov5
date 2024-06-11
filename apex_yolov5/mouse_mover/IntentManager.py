@@ -8,9 +8,7 @@ intention = None
 
 
 class IntentManager:
-    """
-        意图管理器，负责推送移动意图
-    """
+    """意图管理器，负责推送移动意图."""
 
     def __init__(self, mouse_mover: MouseMover, logger: Logger):
         self.logger = logger
@@ -21,8 +19,8 @@ class IntentManager:
 
     def set_intention(self, x, y):
         """
-            设置移动意图
-        :param x:
+        设置移动意图 :param x:
+
         :param y:
         """
         self.intention_lock.acquire()
@@ -34,9 +32,7 @@ class IntentManager:
             self.intention_lock.release()
 
     def start(self):
-        """
-            开始读取移动意图并移动
-        """
+        """开始读取移动意图并移动."""
         sleep_time = 0.01
         while True:
             if self.intention is not None:

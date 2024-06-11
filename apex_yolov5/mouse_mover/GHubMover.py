@@ -9,14 +9,14 @@ class GHubMover(MouseMover):
         super().__init__(mouse_mover_param)
         self.logger = logger
         try:
-            self.gm = CDLL(r'./ghub_device.dll')
+            self.gm = CDLL(r"./ghub_device.dll")
             self.gmok = self.gm.device_open() == 1
             if not self.gmok:
-                print('未安装ghub或者lgs驱动!!!')
+                print("未安装ghub或者lgs驱动!!!")
             else:
-                print('初始化成功!')
+                print("初始化成功!")
         except FileNotFoundError:
-            print('缺少文件')
+            print("缺少文件")
 
     def move_rp(self, x: int, y: int, re_cut_size=0):
         self.move(x, y)

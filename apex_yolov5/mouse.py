@@ -1,9 +1,8 @@
-from ctypes import windll, c_long, c_ulong, Structure, Union, c_int, POINTER, sizeof, CDLL
+from ctypes import CDLL, POINTER, Structure, Union, c_int, c_long, c_ulong, sizeof, windll
 from os import path
 
-
 basedir = path.dirname(path.abspath(__file__))
-dlldir = path.join(basedir, '../ghub_mouse.dll')
+dlldir = path.join(basedir, "../ghub_mouse.dll")
 
 # ↓↓↓↓↓↓↓↓↓ 简易鼠标行为模拟,使用SendInput函数或者调用ghub驱动 ↓↓↓↓↓↓↓↓↓
 LONG = c_long
@@ -12,22 +11,24 @@ ULONG_PTR = POINTER(DWORD)
 gm = CDLL(dlldir)
 gmok = gm.mouse_open()
 
+
 class MOUSEINPUT(Structure):
-    _fields_ = (('dx', LONG),
-                ('dy', LONG),
-                ('mouseData', DWORD),
-                ('dwFlags', DWORD),
-                ('time', DWORD),
-                ('dwExtraInfo', ULONG_PTR))
+    _fields_ = (
+        ("dx", LONG),
+        ("dy", LONG),
+        ("mouseData", DWORD),
+        ("dwFlags", DWORD),
+        ("time", DWORD),
+        ("dwExtraInfo", ULONG_PTR),
+    )
 
 
 class _INPUTunion(Union):
-    _fields_ = (('mi', MOUSEINPUT), ('mi', MOUSEINPUT))
+    _fields_ = (("mi", MOUSEINPUT), ("mi", MOUSEINPUT))
 
 
 class INPUT(Structure):
-    _fields_ = (('type', DWORD),
-                ('union', _INPUTunion))
+    _fields_ = (("type", DWORD), ("union", _INPUTunion))
 
 
 def SendInput(*inputs):
@@ -56,7 +57,7 @@ def mouse_xy(x, y):  # for import
     return SendInput(Mouse(0x0001, x, y))
 
 
-def mouse_down(key = 1):  # for import
+def mouse_down(key=1):  # for import
     if gmok:
         return gm.press(key)
     if key == 1:
@@ -65,7 +66,7 @@ def mouse_down(key = 1):  # for import
         return SendInput(Mouse(0x0008))
 
 
-def mouse_up(key = 1):  # for import
+def mouse_up(key=1):  # for import
     if gmok:
         return gm.release()
     if key == 1:
@@ -77,5 +78,7 @@ def mouse_up(key = 1):  # for import
 def mouse_close():  # for import
     if gmok:
         return gm.mouse_close()
+
+
 # ↑↑↑↑↑↑↑↑↑ 简易鼠标行为模拟,使用SendInput函数或者调用ghub驱动 ↑↑↑↑↑↑↑↑↑
-#mouse_xy(-100,210)
+# mouse_xy(-100,210)

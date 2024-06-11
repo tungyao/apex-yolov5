@@ -7,9 +7,7 @@ client_cache = {}
 
 
 class Client:
-    """
-        识别客户端
-    """
+    """识别客户端."""
 
     def __init__(self, socket_address, client_type):
         self.socket_address = socket_address
@@ -72,9 +70,7 @@ class Client:
         socket_util.send(self.client_socket, data)
 
     def get_images_from_bbox(self, bbox_list):
-        """
-            从服务获取截图，反向架构
-        """
+        """从服务获取截图，反向架构."""
         data = bbox_list
         data = pickle.dumps(data)
         socket_util.send(self.client_socket, data)

@@ -926,10 +926,10 @@ def parse_opt(known=False):
     )
     opt = parser.parse_known_args()[0] if known else parser.parse_args()
     # 检查配置文件是否存在
-    config_file = 'config/export_config.json'
+    config_file = "config/export_config.json"
     if os.path.exists(config_file):
         # 加载配置文件
-        with open(config_file, 'r') as f:
+        with open(config_file, "r") as f:
             config_data = json.load(f)
         # 使用配置文件的数据覆盖opt的属性
         for key, value in config_data.items():

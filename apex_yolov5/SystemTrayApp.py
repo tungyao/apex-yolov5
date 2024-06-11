@@ -1,7 +1,7 @@
 import os
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QAction
+from PyQt5.QtWidgets import QAction, QMenu, QSystemTrayIcon
 
 
 class SystemTrayApp:
@@ -61,7 +61,7 @@ class SystemTrayApp:
 
     def tray_activated(self, reason):
         # 处理双击事件
-        if reason == QSystemTrayIcon.DoubleClick:
+        if reason == QSystemTrayIcon.double-click:
             if self.main_window.isHidden():
                 self.show_app()
             else:

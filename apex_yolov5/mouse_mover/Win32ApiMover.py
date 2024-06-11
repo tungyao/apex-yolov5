@@ -13,7 +13,6 @@ MOUSE_EVEN_TF_MOVE = 0x1
 
 
 class Win32ApiMover(MouseMover):
-
     def __init__(self, logger: Logger, mouse_mover_param):
         super().__init__(mouse_mover_param)
         self.user32 = windll.user32

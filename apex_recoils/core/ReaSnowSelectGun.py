@@ -1,22 +1,20 @@
 import json
 import os.path as op
 
-from apex_yolov5.Tools import Tools
 from apex_yolov5.log.Logger import Logger
 from apex_yolov5.mouse_mover import MoverFactory
+from apex_yolov5.Tools import Tools
 
 
 class ReaSnowSelectGun:
-    """
-        转换器自动识别按键宏触发
-    """
+    """转换器自动识别按键宏触发."""
 
-    def __init__(self, logger: Logger, config_name='ReaSnowGun'):
+    def __init__(self, logger: Logger, config_name="ReaSnowGun"):
         self.logger = logger
         self.config_path = f".\\config\\{config_name}.json"
 
         if op.exists(self.config_path):
-            with open(self.config_path, encoding='utf-8') as global_file:
+            with open(self.config_path, encoding="utf-8") as global_file:
                 self.key_dict = json.load(global_file)
         if "close_key" in self.key_dict:
             self.no_macro_key = self.key_dict["close_key"]

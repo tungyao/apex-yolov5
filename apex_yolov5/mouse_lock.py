@@ -2,10 +2,10 @@ import math
 import random
 import traceback
 
+from apex_yolov5.auxiliary import get_executed_intention, set_click, set_intention
 from apex_yolov5.KeyAndMouseListener import apex_mouse_listener
-from apex_yolov5.Tools import Tools
-from apex_yolov5.auxiliary import set_intention, set_click, get_executed_intention
 from apex_yolov5.socket.config import global_config
+from apex_yolov5.Tools import Tools
 from apex_yolov5.windows.aim_show_window import get_aim_show_window
 from apex_yolov5.windows.circle_window import get_circle_window
 
@@ -60,13 +60,19 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
             traceback.print_exc()
             pass
 
-    if in_moving_raduis(targetRealX, targetRealY, shot_width, shot_height, current_mouse_x, current_mouse_y) and \
-            not in_delayed(width, height, targetRealX, targetRealY, screenCenterX, screenCenterY):
+    if in_moving_raduis(
+        targetRealX, targetRealY, shot_width, shot_height, current_mouse_x, current_mouse_y
+    ) and not in_delayed(width, height, targetRealX, targetRealY, screenCenterX, screenCenterY):
         lead_x, lead_y = (0, 0)
         if global_config.lead_time_toggle:
-            lead_x, lead_y = lead_time_xy(targetRealX, targetRealY, current_mouse_x, current_mouse_y,
-                                          global_config.lead_time_frame,
-                                          global_config.lead_time_decision_frame)
+            lead_x, lead_y = lead_time_xy(
+                targetRealX,
+                targetRealY,
+                current_mouse_x,
+                current_mouse_y,
+                global_config.lead_time_frame,
+                global_config.lead_time_decision_frame,
+            )
         (x1, y1) = (left_top_x + (int(targetShotX - width / 2.0)), (left_top_y + int(targetShotY - height / 2.0)))
         (x2, y2) = (left_top_x + (int(targetShotX + width / 2.0)), (left_top_y + int(targetShotY + height / 2.0)))
         # 随机弹道计算
@@ -89,9 +95,14 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
 
         # 漏枪逻辑cc
         if not global_config.intention_deviation_toggle:
-            set_intention(targetRealX - current_mouse_x, targetRealY - current_mouse_y, lead_x, lead_y,
-                          random_deviation,
-                          min(width / 2.0, height / 2.0))
+            set_intention(
+                targetRealX - current_mouse_x,
+                targetRealY - current_mouse_y,
+                lead_x,
+                lead_y,
+                random_deviation,
+                min(width / 2.0, height / 2.0),
+            )
             if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
                 set_click()
         else:
@@ -100,9 +111,14 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
                 if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
                     lock_time += 1
                 # 正常追踪
-                set_intention(targetRealX - current_mouse_x, targetRealY - current_mouse_y, lead_x, lead_y,
-                              random_deviation,
-                              min(width / 2.0, height / 2.0))
+                set_intention(
+                    targetRealX - current_mouse_x,
+                    targetRealY - current_mouse_y,
+                    lead_x,
+                    lead_y,
+                    random_deviation,
+                    min(width / 2.0, height / 2.0),
+                )
                 if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
                     set_click()
             elif no_lock_time < global_config.intention_deviation_duration:
@@ -110,20 +126,32 @@ def lock(aims, mouse, screen_width, screen_height, shot_width, shot_height):
                 if x1 < screenCenterX < x2 and y1 < screenCenterY < y2:
                     targetRealX = x1 if float(target_x) > 0.5 else x2
                 if global_config.intention_deviation_force:
-                    set_intention(targetRealX - current_mouse_x, targetRealY - current_mouse_y, lead_x, lead_y,
-                                  random_deviation,
-                                  min(width / 2.0, height / 2.0))
+                    set_intention(
+                        targetRealX - current_mouse_x,
+                        targetRealY - current_mouse_y,
+                        lead_x,
+                        lead_y,
+                        random_deviation,
+                        min(width / 2.0, height / 2.0),
+                    )
             # 重置标记
-            if lock_time == global_config.intention_deviation_interval and no_lock_time == global_config.intention_deviation_duration:
+            if (
+                lock_time == global_config.intention_deviation_interval
+                and no_lock_time == global_config.intention_deviation_duration
+            ):
                 lock_time = 0
                 no_lock_time = 0
 
-    target_width_origin, target_height_origin = float(
-        target_width) * shot_width / global_config.default_shot_width, float(
-        target_height) * shot_height / global_config.default_shot_height
+    target_width_origin, target_height_origin = (
+        float(target_width) * shot_width / global_config.default_shot_width,
+        float(target_height) * shot_height / global_config.default_shot_height,
+    )
 
-    averager = *average_target_proportion(
-        (float(target_width), float(target_height))), float(target_width_origin), float(target_height_origin)
+    averager = (
+        *average_target_proportion((float(target_width), float(target_height))),
+        float(target_width_origin),
+        float(target_height_origin),
+    )
     return averager
 
 
@@ -133,12 +161,14 @@ def in_moving_raduis(targetRealX, targetRealY, shot_width, shot_height, current_
     else:
         mouse_moving_radius = global_config.mouse_moving_radius
 
-    mouse_moving_radius = round(mouse_moving_radius * max(shot_width / global_config.default_shot_width,
-                                                          shot_height / global_config.default_shot_height), 2)
+    mouse_moving_radius = round(
+        mouse_moving_radius
+        * max(shot_width / global_config.default_shot_width, shot_height / global_config.default_shot_height),
+        2,
+    )
     if global_config.show_circle:
         get_circle_window().update_circle_auto_change(mouse_moving_radius)
-    return (mouse_moving_radius ** 2 >
-            (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2)
+    return mouse_moving_radius**2 > (targetRealX - current_mouse_x) ** 2 + (targetRealY - current_mouse_y) ** 2
 
 
 def in_delayed(width, height, targetRealX, targetRealY, screenCenterX, screenCenterY):
@@ -148,8 +178,10 @@ def in_delayed(width, height, targetRealX, targetRealY, screenCenterX, screenCen
     delayed_height = height / 2.0 * global_config.delayed_aiming_factor_y
     delayed_aiming_xy1 = int(targetRealX - delayed_width), int(targetRealY - delayed_height)
     delayed_aiming_xy2 = int(targetRealX + delayed_width), int(targetRealY + delayed_height)
-    return delayed_aiming_xy1[0] < screenCenterX < delayed_aiming_xy2[0] and \
-        delayed_aiming_xy1[1] < screenCenterY < delayed_aiming_xy2[1]
+    return (
+        delayed_aiming_xy1[0] < screenCenterX < delayed_aiming_xy2[0]
+        and delayed_aiming_xy1[1] < screenCenterY < delayed_aiming_xy2[1]
+    )
 
 
 def average_target_proportion(target_size):
@@ -185,32 +217,43 @@ history_move_diff_y_queue = Tools.FixedSizeQueue(100)
 
 def lead_time_xy(targetRealX, targetRealY, current_mouse_x, current_mouse_y, lead_time_frame, lead_time_decision_frame):
     executed_intention_x, executed_intention_y = get_executed_intention()
-    return (lead_time_one('x', targetRealX,
-                          current_mouse_x,
-                          executed_intention_x,
-                          lead_time_frame,
-                          lead_time_decision_frame,
-                          history_move_x_queue,
-                          history_executed_intention_x_queue,
-                          history_move_diff_x_queue),
-            lead_time_one('y', targetRealY,
-                          current_mouse_y,
-                          executed_intention_y,
-                          lead_time_frame,
-                          lead_time_decision_frame,
-                          history_move_y_queue,
-                          history_executed_intention_y_queue,
-                          history_move_diff_y_queue))
+    return (
+        lead_time_one(
+            "x",
+            targetRealX,
+            current_mouse_x,
+            executed_intention_x,
+            lead_time_frame,
+            lead_time_decision_frame,
+            history_move_x_queue,
+            history_executed_intention_x_queue,
+            history_move_diff_x_queue,
+        ),
+        lead_time_one(
+            "y",
+            targetRealY,
+            current_mouse_y,
+            executed_intention_y,
+            lead_time_frame,
+            lead_time_decision_frame,
+            history_move_y_queue,
+            history_executed_intention_y_queue,
+            history_move_diff_y_queue,
+        ),
+    )
 
 
-def lead_time_one(name, target_real,
-                  current_mouse,
-                  executed_intention,
-                  lead_time_frame,
-                  lead_time_decision_frame,
-                  history_move_queue,
-                  history_executed_intention_queue,
-                  history_move_diff_queue):
+def lead_time_one(
+    name,
+    target_real,
+    current_mouse,
+    executed_intention,
+    lead_time_frame,
+    lead_time_decision_frame,
+    history_move_queue,
+    history_executed_intention_queue,
+    history_move_diff_queue,
+):
     move = target_real - current_mouse
 
     last_move = history_move_queue.get_last()
@@ -232,7 +275,8 @@ def lead_time_one(name, target_real,
         return 0
 
     print(
-        f"{name} move diff:({move_diff}) last move intention:({executed_intention}), Actual Move: ({move}), lead: ({move_diff * lead_time_frame})")
+        f"{name} move diff:({move_diff}) last move intention:({executed_intention}), Actual Move: ({move}), lead: ({move_diff * lead_time_frame})"
+    )
     return move_diff * lead_time_frame
 
 
