@@ -5,7 +5,6 @@ import shutil
 
 import jsonpath as jsonpath
 import pynput
-from torch.cuda import is_available
 
 from apex_yolov5.Counter import sure_no_aim, reset_counter
 from apex_yolov5.Tools import Tools
@@ -127,14 +126,18 @@ class Config:
         self.init()
 
     def init(self):
-        self.version = "v3.52"
+        self.version = "v3.53"
         self.listener_ip = self.get_config(self.config_data, 'listener_ip')
         self.listener_port = self.get_config(self.config_data, 'listener_port')
         self.listener_ports = self.get_config(self.config_data, 'listener_ports')
         self.buffer_size = self.get_config(self.config_data, 'buffer_size')
         self.device = self.get_config(self.config_data, 'device')
         if self.device == 'cuda':
+            from torch.cuda import is_available
             self.device = 'cuda' if is_available() else 'cpu'
+        elif self.device == 'dml':
+            from torch_directml import is_available
+            self.device = 'dml' if is_available() else 'cpu'
         self.imgsz = self.get_config(self.config_data, 'imgszx')
         self.imgszy = self.get_config(self.config_data, 'imgszy')
         self.conf_thres = self.get_config(self.config_data, 'conf_thres')
@@ -160,7 +163,22 @@ class Config:
                 "VID/PID": "66882021"
             },
             "wu_ya": {
-                "VID/PID": "26121701"
+                "VID/PID": "046DC539"
+            },
+            "km_box_net": {
+                "ip": "192.168.2.188",
+                "port": "35368",
+                "uuid": "8A6E5C53"
+            },
+            "fei_yi_lai": {
+                "VID/PID": "C2160102"
+            },
+            "fei_yi_lai_single": {
+                "VID/PID": "C2160301"
+            },
+            "logitech": {},
+            "pan_ni": {
+                "VID/PID": "1C1FC18A"
             }
         })
 

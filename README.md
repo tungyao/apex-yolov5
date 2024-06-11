@@ -4,6 +4,8 @@
 
 开源交流群新建于2024-04-25，群号：206666041，加群前请先star。
 
+[![Star History Chart](https://api.star-history.com/svg?repos=wdragondragon/apex-yolov5&type=Date)](https://star-history.com/#wdragondragon/apex-yolov5&Date)
+
 ## 功能清单
 
 - [x] ai自瞄，敌我识别
